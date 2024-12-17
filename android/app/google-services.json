@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "376834769488",
+    "project_id": "ut-messenger-ac288",
+    "storage_bucket": "ut-messenger-ac288.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:376834769488:android:47ec8371ba4e91ce6a8755",
+        "android_client_info": {
+          "package_name": "com.utmessenger.main"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQSjYwzHRAEjCoVYKOTLapvE6bTaFMftU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
