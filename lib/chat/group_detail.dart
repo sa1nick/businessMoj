@@ -483,6 +483,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
           Uri.parse(
               '${AppUrl.myChatList}/${widget.chatListData?.id.toString()}'),
           headers: headers);
+      
+      print('${response.statusCode}____________fsdfd');
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);

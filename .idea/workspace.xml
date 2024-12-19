@@ -9,7 +9,24 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="client changes in notificationScreen" />
+    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="client changes in notificationScreen">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/group_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_detail.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/group_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/colors.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/colors.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/home/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/chatlist_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/chatlist_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/contact_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/contact_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,8 +58,8 @@
 }</component>
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;git@github.com:alphawizzflutterteam/ut_messenger.git&quot;,
-    &quot;accountId&quot;: &quot;afa325f6-678d-4ea5-b485-93df79ef9554&quot;
+    &quot;url&quot;: &quot;https://github.com/alphawizzflutterteam/businessmoj.git&quot;,
+    &quot;accountId&quot;: &quot;886ec790-aabb-413b-9614-873672c52090&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -52,6 +69,7 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2oavin9G8KMfZlhlJDPzs6qEMjd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />

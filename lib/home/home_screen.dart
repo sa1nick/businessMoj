@@ -263,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               BoxShadow(
                                                   color: Colors.black12,
                                                   blurRadius: 2,
-                                                  spreadRadius: 3),
+                                                  spreadRadius: 2),
                                             ],
                                           ),
                                           child: Row(
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 padding:
                                                     const EdgeInsets.all(10.0),
                                                 child: CircleAvatar(
-                                                  radius: 30,
+                                                  radius: 25,
                                                   backgroundColor:
                                                       MyColor.greyBorder,
                                                   child: ClipOval(
@@ -293,13 +293,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   crossAxisAlignment:
                                                       CrossAxisAlignment.start,
                                                   children: [
-                                                    Text(
-                                                      chatOrGroupname(users),
-                                                      style: const TextStyle(
-                                                          fontSize: 15,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                                    Row(children: [
+                                                      Text(
+                                                        chatOrGroupname(users),
+                                                        style: const TextStyle(
+                                                            fontSize: 15,
+                                                            fontWeight:
+                                                            FontWeight.bold),
+                                                      ),
+                                                      const SizedBox(width: 10,),
+                                                      users.unreadCount =='0' ? const SizedBox() :  CircleAvatar(radius: 10,backgroundColor: MyColor.unreadColor1,child: Text('${users.unreadCount}',style: const TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 12),),),
+
+                                                    ],),
                                                     users.type == 3
                                                         ? SizedBox(
                                                       width: 150,
@@ -315,18 +320,33 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         TextOverflow
                                                                             .ellipsis)),
                                                           )
-                                                        : Text(
-                                                            DateFormat('MMM d, yyyy').format(DateTime.parse(users.createdAt ??
-                                                                '')),
-                                                            style: const TextStyle(
-                                                                fontSize: 15,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .clip),
-                                                          ),
+                                                        : Row(
+                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            Text(
+                                                                DateFormat('MMM d, yyyy').format(DateTime.parse(users.createdAt ??
+                                                                    '')),
+                                                                style: const TextStyle(
+                                                                    fontSize: 15,
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .clip),
+                                                              ),
+                                                            // Container(
+                                                            //   padding: EdgeInsets.symmetric(horizontal: 5),
+                                                            //   decoration: BoxDecoration(
+                                                            //       border: Border.all(color: MyColor.unreadColor1,
+                                                            //       ),borderRadius: BorderRadius.circular(5)),
+                                                            //   child: const Text('2 pending...',style: TextStyle(fontSize: 12, color: MyColor.black),),
+                                                            // )
+                                                          ],
+                                                        ),
                                                   ],
                                                 ),
                                               ),
+                                             // const CircleAvatar(radius: 10,backgroundColor: MyColor.unreadColor1,child: Text('2',style: TextStyle(color: Colors.white,fontWeight: FontWeight.w700,fontSize: 12),),),
+                                              const SizedBox(width: 20,)
+
                                             ],
                                           ),
                                         ),
@@ -342,14 +362,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   String chatOrGroupname(ChatListData chat) {
     if (chat.type == 1 && chat.chatroom?.length == 2) {
-      Chatroom? otherUser = chat.chatroom
-          ?.where((element) {
-            return element.user?.id != vId;
-          })
-          .toList()
-          .first;
 
-      return "${otherUser?.user?.fName} ${otherUser?.user?.lName.toString()}";
+
+     List <Chatroom>? otherUser = chat.chatroom?.where((element) {
+        return element.user?.id != vId;}).toList();
+
+        if(otherUser?.isNotEmpty ?? false) {
+          return '"${otherUser?.first.user?.fName} ${otherUser?.first.user?.lName.toString()}"';
+        }else {
+          return '';
+        }
+
+     // return "${otherUser?.user?.fName} ${otherUser?.user?.lName.toString()}";
     } else {
       return '${chat.title}';
     }

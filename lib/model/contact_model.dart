@@ -3,6 +3,7 @@ class MyContactModel {
   String? name;
   String? image;
   String? phone;
+  String? roomId;
   bool? isSelected;
 
   MyContactModel({this.id, this.name, this.image, this.phone});
@@ -12,6 +13,7 @@ class MyContactModel {
     name = json['name'];
     image = json['image'];
     phone = json['phone'];
+    roomId = json['room_id'];
     isSelected= false;
   }
 
@@ -21,6 +23,7 @@ class MyContactModel {
     data['name'] = name;
     data['image'] = image;
     data['phone'] = phone;
+    data['room_id'] = roomId;
     return data;
   }
 }

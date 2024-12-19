@@ -10,6 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ut_messenger/chat/add_group.dart';
 import 'package:ut_messenger/chat/chat_page.dart';
+import 'package:ut_messenger/chat/group_page.dart';
 import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
 import 'package:ut_messenger/model/contact_model.dart';
@@ -62,7 +63,8 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
     String? contact = prefs?.getString(AppConstants.myContact);
 
-    if (contact != null) {
+
+    if (contact != null && contact != '[]') {
       var data = jsonDecode(contact);
       myContactsList = (data as List)
           .map(
@@ -81,7 +83,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
     await Future.delayed(
         const Duration(milliseconds: 100)); // Simulate a network call
     setState(() {
-      // myContacts();
+      contactPermission();
     });
   }
 
@@ -154,7 +156,9 @@ class _FriendListScreenState extends State<FriendListScreen> {
                             itemBuilder: (context, index) {
                               var friend = myContactsList[index];
 
-                              return Padding(
+                              return vId == myContactsList[index].id
+                                  ? const SizedBox()
+                                  : Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0, vertical: 5),
                                 child: Container(
@@ -247,15 +251,16 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                           ],
                                         ),
                                       ),
-                                      isSelectable ? SizedBox() :  Row(
+                                      isSelectable ? const SizedBox() :  Row(
                                         children: [
                                           GestureDetector(
                                             onTap: () {
+                                              print('${friend.roomId}___________kjs');
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
                                                       builder: (context) =>
-                                                          ChatPage(
+                                                          GroupPage(
                                                             name: friend.name
                                                                 .toString(),
                                                             image: friend
@@ -263,6 +268,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                                                 .toString(),
                                                             friendId: friend!.id
                                                                 .toString(),
+                                                            myRoomId: friend.roomId,
                                                           )));
                                             },
                                             child: Padding(
@@ -318,6 +324,8 @@ class _FriendListScreenState extends State<FriendListScreen> {
       log(token!);
 
       if (response.statusCode == 200) {
+        print('${response.body}');
+
         prefs?.setString(AppConstants.myContact, response.body);
 
         var data = jsonDecode(response.body);

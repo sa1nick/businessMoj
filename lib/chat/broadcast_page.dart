@@ -428,6 +428,17 @@ class _BroadcastPageState extends State<BroadcastPage> {
                               'chat_type': 'broadcast'
                             }));
 
+                            print('${{
+                              'type': 'chat',
+                              "user_type": 'user',
+                              "sender": currentuser,
+                              "receiver_user": widget.friendId,
+                              "content": messageController.text,
+                              "messageType": 1,
+                              'room_id': widget.chatListData?.id.toString(),
+                              'chat_type': 'broadcast'
+                            }}');
+
                             //  messageList.add(Messages(createdAt: '${DateTime.now()}', createdBy: 2,id: 5464,message: messageController.text,type: 1));
                             messageController.clear();
                           }

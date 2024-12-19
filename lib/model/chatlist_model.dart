@@ -44,6 +44,7 @@ class ChatListData {
   String? updatedAt;
   int? updatedBy;
   String? imageUrl;
+  String? unreadCount;
   List<Chatroom>? chatroom;
 
   ChatListData(
@@ -61,13 +62,14 @@ class ChatListData {
         this.updatedAt,
         this.updatedBy,
         this.imageUrl,
-        this.chatroom});
+        this.chatroom,this.unreadCount});
 
   ChatListData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     orderId = json['order_id'];
     clubId = json['club_id'];
+    unreadCount = json['unread_count'].toString();
     type = json['type'];
     image = json['image'];
     description = json['description'];
@@ -102,6 +104,7 @@ class ChatListData {
     data['updated_at'] = updatedAt;
     data['updated_by'] = updatedBy;
     data['image_url'] = imageUrl;
+    data['unread_count'] = unreadCount;
     if (chatroom != null) {
       data['chatroom'] = chatroom!.map((v) => v.toJson()).toList();
     }

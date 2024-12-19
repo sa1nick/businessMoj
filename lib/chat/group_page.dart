@@ -1,13 +1,19 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ut_messenger/helper/api.dart';
@@ -23,14 +29,17 @@ import 'group_detail.dart';
 
 class GroupPage extends StatefulWidget {
   final String name, image, friendId;
+  final String? myRoomId ;
 
  final ChatListData? chatListData ;
+
 
   const GroupPage(
       {Key? key,
       required this.name,
       required this.image,
         this.chatListData,
+        this.myRoomId,
       required this.friendId})
       : super(key: key);
 
@@ -42,6 +51,7 @@ class _GroupPageState extends State<GroupPage> {
   File? imagefile, anyfile;
 
   bool isTyping = false;
+
 
   Future<void> pickfiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -63,7 +73,7 @@ class _GroupPageState extends State<GroupPage> {
           "receiver_user": widget.friendId,
           "fileName": anyfile?.path.split('/').last,
           "fileData": base64Image,
-          'room_id': widget.chatListData?.id.toString()
+          'room_id': widget.chatListData?.id == null ? widget.myRoomId.toString() : widget.chatListData?.id.toString(),
         }));
       }
     }
@@ -79,6 +89,16 @@ class _GroupPageState extends State<GroupPage> {
 
       String base64Image = base64Encode(imagefile!.readAsBytesSync());
 
+      print('${jsonEncode({
+        'type': 'file',
+        "user_type": 'user',
+        "sender": currentuser,
+        "receiver_user": widget.friendId,
+        "fileName": imagefile?.path.split('/').last,
+        "fileData": base64Image,
+        'room_id': widget.chatListData?.id == null ? widget.myRoomId.toString() : widget.chatListData?.id.toString(),
+      })}');
+
       channel.sink.add(jsonEncode({
         'type': 'file',
         "user_type": 'user',
@@ -86,8 +106,10 @@ class _GroupPageState extends State<GroupPage> {
         "receiver_user": widget.friendId,
         "fileName": imagefile?.path.split('/').last,
         "fileData": base64Image,
-        'room_id': widget.chatListData?.id.toString()
+        'room_id': widget.chatListData?.id == null ? widget.myRoomId.toString() : widget.chatListData?.id.toString(),
       }));
+
+
     }
   }
 
@@ -125,24 +147,38 @@ class _GroupPageState extends State<GroupPage> {
 
 
 
-    channel.sink.add( jsonEncode({
-      'type': 'fetch_history',
-      'sender': currentuser,
-      'receiver_user': widget.friendId,
-      'room_id': widget.chatListData?.id.toString(),
-    }));
+
+
+    if(widget.myRoomId != null ) {
+      channel.sink.add( jsonEncode({
+        'type': 'fetch_history',
+        'sender': currentuser,
+        'receiver_user': widget.friendId,
+        'room_id': widget.myRoomId.toString(),
+      }));
+    } else {
+      channel.sink.add( jsonEncode({
+        'type': 'fetch_history',
+        'sender': currentuser,
+        'receiver_user': widget.friendId,
+        'room_id': widget.chatListData?.id.toString(),
+      }));
+    }
+
+    // channel.sink.add( jsonEncode({
+    //   'type': 'fetch_history',
+    //   'sender': currentuser,
+    //   'receiver_user': widget.friendId,
+    //   'room_id': widget.chatListData?.id.toString(),
+    // }));
 
     scrollController.addListener(() {});
     channel.stream.listen(
       (event) {
 
-       // print(event);
         var data = jsonDecode(event);
 
-        print('${data['type'] == 'chat'}_______________1');
-        print('${data['room_id'] == widget.chatListData?.id}_______________2');
-        print('${data['chat_user'] == widget.friendId}_______________3');
-        print('${data['logged_user'].toString() == widget.friendId}_______________4');
+        print('${data}');
 
 
         if (data['type'] == 'history') {
@@ -155,25 +191,24 @@ class _GroupPageState extends State<GroupPage> {
           isTyping = false;
           setState(() {});
         }
-        else if (data['type'] == 'chat' &&
-            (data['room_id'] == widget.chatListData?.id ||
-                data['logged_user'].toString() == currentuser) &&
-            (data['chat_user'] == widget.friendId ||
-                data['logged_user'].toString() == widget.friendId)) {
-          messageList.add(SmSHistoryModel.fromJson(data).messages!.first);
+        else if (data['type'] == 'chat' && (data['room_id'] == widget.chatListData?.id.toString() || data['room_id'] == widget.myRoomId )) {
+
+          messageList.add( SmSHistoryModel.fromJson(data).messages!.first);
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(
                 scrollController.position.maxScrollExtent);
           });
 
-          setState(() {});
+          if(mounted) {
+            setState(() {});
+          }
         } else if (data['type'] == 'typing' &&
             data['isTyping'] &&
             isTyping == false &&
             data['receiver_user'].toString() == currentuser) {
           isTyping = true;
-          setState(() {});
+         // setState(() {});
         } else {
           isTyping = false;
 //          setState(() {});
@@ -186,6 +221,14 @@ class _GroupPageState extends State<GroupPage> {
         reconnectWebSocket();
       },
     );
+
+
+    // _mPlayer!.openPlayer().then((value) {
+    //   setState(() {
+    //     _mPlayerIsInited = true;
+    //   });
+    // });
+    // recordAudio();
   }
 
   void reconnectWebSocket() {
@@ -301,7 +344,6 @@ class _GroupPageState extends State<GroupPage> {
             itemCount: messageList.length ?? 0,
                 controller: scrollController,
                 itemBuilder: (context, index) {
-                  print(index);
                   var message = messageList[index];
 
                   return Column(
@@ -403,9 +445,15 @@ class _GroupPageState extends State<GroupPage> {
                                       },
                                       child:
                                       const Icon(Icons.camera_alt)),
-                                  const SizedBox(
-                                    width: 5,
-                                  )
+                                  /*const SizedBox(
+                                    width: 10,
+                                  ),
+                                  GestureDetector(
+                                      onTap: () {
+                                        getRecorderFn();
+                                      },
+                                      child:
+                                      const Icon(Icons.mic)),*/
                                 ],
                               ),
                             ),
@@ -424,9 +472,10 @@ class _GroupPageState extends State<GroupPage> {
                               "receiver_user": widget.friendId,
                               "messageType": 1,
                               "isTyping": false,
-                              'room_id': widget.chatListData?.id.toString(),
+                              'room_id': widget.chatListData?.id == null ? widget.myRoomId.toString() : widget.chatListData?.id.toString(),
                               'sender_name': userData?.name
                             }));
+
 
                             channel.sink.add(jsonEncode({
                               'type': 'chat',
@@ -435,7 +484,7 @@ class _GroupPageState extends State<GroupPage> {
                               "receiver_user": widget.friendId,
                               "content": messageController.text,
                               "messageType": 1,
-                              'room_id': widget.chatListData?.id.toString(),
+                              'room_id': widget.chatListData?.id == null ? widget.myRoomId.toString() : widget.chatListData?.id.toString(),
                               'sender_name': userData?.name
                             }));
 
@@ -833,6 +882,87 @@ class _GroupPageState extends State<GroupPage> {
         return alert;
       },
     );
+  }
+
+  FlutterSoundPlayer? _mPlayer = FlutterSoundPlayer();
+  FlutterSoundRecorder? _mRecorder = FlutterSoundRecorder();
+  bool _mPlayerIsInited = false;
+  bool _mRecorderIsInited = false;
+  bool _mplaybackReady = false;
+
+  String? _mPath;
+  StreamSubscription? _mRecordingDataSubscription;
+  int sampleRate = 16000;
+
+
+
+
+  Future<void> recordAudio() async{
+
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      throw RecordingPermissionException('Microphone permission not granted');
+    }
+
+    await _mRecorder!.openRecorder();
+    setState(() {
+      _mRecorderIsInited = true;
+    });
+  }
+
+  Future<void> record() async {
+  /*  print('${assert(_mRecorderIsInited && _mPlayer!.isStopped)}_________Sdasdasd');
+    assert(_mRecorderIsInited && _mPlayer!.isStopped);*/
+
+
+    var sink = await createFile();
+
+    var recordingDataController = StreamController<Uint8List>();
+    _mRecordingDataSubscription =
+        recordingDataController.stream.listen((buffer) {
+          sink.add(buffer);
+        });
+    await _mRecorder!.startRecorder(
+      toStream: recordingDataController.sink,
+     // codec: Codec.pcm16,
+      numChannels: 1,
+      sampleRate: sampleRate,
+      bufferSize: 8192,
+    );
+    setState(() {});
+  }
+
+  Future<IOSink> createFile() async {
+
+    var tempDir = await getTemporaryDirectory();
+    _mPath = '${tempDir.path}/flutter_sound_example.pcm';
+    var outputFile = File(_mPath!);
+    if (outputFile.existsSync()) {
+      await outputFile.delete();
+    }
+    return outputFile.openWrite();
+  }
+
+   getRecorderFn() {
+
+     if (!_mRecorderIsInited || !_mPlayer!.isStopped) {
+      return null;
+    }
+
+    return _mRecorder!.isStopped
+        ? record
+        : () {
+      stopRecorder().then((value) => setState(() {}));
+    };
+  }
+
+  Future<void> stopRecorder() async {
+    await _mRecorder!.stopRecorder();
+    if (_mRecordingDataSubscription != null) {
+      await _mRecordingDataSubscription!.cancel();
+      _mRecordingDataSubscription = null;
+    }
+    _mplaybackReady = true;
   }
 }
 

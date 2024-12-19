@@ -10,6 +10,8 @@ class MyColor {
   static const Color secondaryLight = Color(0xfff5f1f1);
   static const Color shadow = Color(0xffe8e7e7);
   static const Color yellow = Color(0xFFfdcd11);
+  static const Color unreadColor = Color(0xFF00ff00);
+  static const Color unreadColor1 = Color(0xFF00D100);
 
   static const Color black = Color(0xff000000);
   static const Color white = Color(0xffFFFFFF);
