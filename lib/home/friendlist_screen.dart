@@ -66,11 +66,8 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
     if (contact != null && contact != '[]') {
       var data = jsonDecode(contact);
-      myContactsList = (data as List)
-          .map(
-            (e) => MyContactModel.fromJson(e),
-          )
-          .toList();
+      myContactsList = (data as List).map((e) => MyContactModel.fromJson(e),).toList();
+      tempList = myContactsList ;
       setState(() {});
     } else {
       contactPermission();
@@ -142,14 +139,52 @@ class _FriendListScreenState extends State<FriendListScreen> {
             const SizedBox(
               height: 10,
             ),
+
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: searchController,
+                readOnly: false,
+                onChanged: (value){
+                  searchMock (value);
+                },
+                decoration: InputDecoration(
+                  isDense: true,
+                  hintText: "Search..",
+                  hintStyle: const TextStyle(
+                    color: Colors.grey,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15.0),
+                  ),
+                  prefixIcon: const Icon(Icons.search_rounded),
+                ),
+              ),
+            ),
             loading
-                ? const Center(
-                    child: CircularProgressIndicator(
-                      color: MyColor.primary,
-                    ),
-                  )
+                ? Column(
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height/3,),
+                    const Center(
+                        child: CircularProgressIndicator(
+                          color: MyColor.primary,
+                        ),
+                      ),
+                  ],
+                )
                 : myContactsList.isEmpty
-                    ? const Center(child: Text("No Friends"))
+                    ? Column(
+                      children: [
+                        SizedBox(height: MediaQuery.of(context).size.height/3,),
+                        const Center(child: Text("No Friends")),
+                      ],
+                    )
                     : Expanded(
                         child: ListView.builder(
                             itemCount: myContactsList.length,
@@ -255,7 +290,6 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
-                                              print('${friend.roomId}___________kjs');
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -329,11 +363,9 @@ class _FriendListScreenState extends State<FriendListScreen> {
         prefs?.setString(AppConstants.myContact, response.body);
 
         var data = jsonDecode(response.body);
-        myContactsList = (data as List)
-            .map(
-              (e) => MyContactModel.fromJson(e),
-            )
-            .toList();
+        myContactsList = (data as List).map((e) => MyContactModel.fromJson(e),).toList();
+
+        tempList = myContactsList ;
       } else {
         // Handle error response
         Fluttertoast.showToast(msg: "Failed to load profile");
@@ -374,5 +406,24 @@ class _FriendListScreenState extends State<FriendListScreen> {
   String normalizePhoneNumber(String phoneNumber) {
     // Normalize the phone number (remove spaces, dashes, etc.)
     return phoneNumber.replaceAll(RegExp(r'\D'), '');
+  }
+
+  List<MyContactModel> tempList = [];
+
+  searchMock(String value) {
+    final suggestions = tempList.where((element) {
+      final username = element.name?.toLowerCase();
+      String? description = element.phone?.toLowerCase();
+      final input = value.toLowerCase();
+
+
+      return username!.contains(input)  ||  description!.contains(input)  ; /*||  firmName!.contains(input)*//* || mobile.contains(input) ||  firmName.contains(input)*/;
+    }).toList();
+    myContactsList = suggestions;
+    setState(() {
+
+    });
+
+    // update();
   }
 }

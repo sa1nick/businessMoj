@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -5,11 +6,16 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ut_messenger/chat/group_page.dart';
 import 'package:ut_messenger/helper/api.dart';
 import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
@@ -41,6 +47,13 @@ class _BroadcastPageState extends State<BroadcastPage> {
   File? imagefile, anyfile;
 
   bool isTyping = false;
+
+  FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
+  FlutterSoundPlayer _soundPlayer = FlutterSoundPlayer();
+  String _audioPath = '';
+  bool _isRecording = false;
+  Timer? _timer;
+  int _elapsedTime = 0;
 
   Future<void> pickfiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -108,8 +121,9 @@ class _BroadcastPageState extends State<BroadcastPage> {
     // TODO: implement initState
     super.initState();
 
-
+    _initializeRecorder();
     inIt();
+
   }
 
   inIt() async {
@@ -180,6 +194,144 @@ class _BroadcastPageState extends State<BroadcastPage> {
       },
     );
   }
+  Future<void> _initializeRecorder() async {
+    await _soundRecorder.openRecorder();
+    await _soundPlayer.openPlayer();
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    if (await Permission.microphone.request().isGranted) {
+      print('Microphone permission granted');
+    } else {
+      print('Microphone permission denied');
+    }
+  }
+  Future<void> _startRecording() async {
+
+
+    final directory = await getApplicationDocumentsDirectory();
+    DateTime date = DateTime.now();
+
+    _audioPath = '${directory.path}/voice_recording${date}.aac';
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        _elapsedTime++;
+      });
+    });
+    await _soundRecorder.startRecorder(toFile: _audioPath);
+    setState(() {
+      _isRecording = true;
+    });
+  }
+
+  String _formatTime(int seconds) {
+    int hours = seconds ~/ 3600;
+    int minutes = (seconds % 3600) ~/ 60;
+    int remainingSeconds = seconds % 60;
+
+    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _stopRecording() async {
+    await _soundRecorder.stopRecorder();
+
+
+    _timer?.cancel();
+    setState(() {
+      _isRecording = false;
+      _elapsedTime = 0;
+    });
+
+    anyfile = File(_audioPath);
+
+    String base64Image = base64Encode(anyfile!.readAsBytesSync());
+
+    channel.sink.add(jsonEncode({
+      'type': 'file',
+      "user_type": 'user',
+      "sender": currentuser,
+      "receiver_user": widget.friendId,
+      "fileName": anyfile?.path.split('/').last,
+      "fileData": base64Image,
+      'room_id': widget.chatListData?.id.toString(),
+      'chat_type': 'broadcast',
+    }));
+    // Send the audio to the chat (you can implement your own chat logic here)
+
+
+  }
+
+  void stopAudio(int index ) async {
+
+    await _soundPlayer.stopPlayer();
+    setState(() {
+      messageList[index].isplaying = false;
+      messageList[index].currentPosition = Duration.zero;
+    });
+  }
+
+  void playAudio(String url, int index) async {
+    setState(() {
+      messageList[index].isBuffering = true;
+    });
+
+    _soundPlayer.setSubscriptionDuration(const Duration(milliseconds: 1000));
+    try {
+      await _soundPlayer.startPlayer(
+        fromURI: url,
+        //codec: Codec(),
+        whenFinished: () {
+          setState(() {
+            messageList[index].isplaying = false;
+            messageList[index].currentPosition = Duration.zero;
+          });
+        },
+      ).then((_){
+        if (_soundPlayer.onProgress != null) {
+          _soundPlayer.onProgress?.listen((event) {
+            print('Position: ${event.position}, Duration: ${event.duration}');
+            setState(() {
+              messageList[index].currentPosition = event.position;
+              messageList[index].totalDuration = event.duration;
+            });
+          });
+          setState(() {
+            messageList[index].isplaying = true;
+            messageList[index].isBuffering = false;
+          });
+        } else {
+          print("onProgress is null");
+        }
+      });
+
+
+      // _soundPlayer.onProgress!.listen((event) {
+      //   setState(() {
+      //
+      //     print('${event.duration}_________dfsdf');
+      //     _currentPosition = event.position;
+      //
+      //     _totalDuration = event.duration;
+      //   });
+      // });
+
+
+    } catch (e) {
+      print("Error: $e");
+      setState(() {
+        messageList[index].isBuffering = false;
+      });
+    }
+  }
+
+  String formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    final minutes = twoDigits(duration.inMinutes.remainder(60));
+    final seconds = twoDigits(duration.inSeconds.remainder(60));
+    return "$minutes:$seconds";
+  }
+
 
   void reconnectWebSocket() {
     // Implement a reconnection strategy (e.g., exponential backoff)
@@ -301,6 +453,22 @@ class _BroadcastPageState extends State<BroadcastPage> {
                           children: [
                             MessageBubble(
                               index: index,
+                              onLongPress: (){
+
+                                if(message.createdBy.toString() == currentuser) {
+                                  messageList[index].isSelected = true ;
+                                  setState(() {});
+
+                                  /*showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return confirmDialog(message, index);
+                                    },
+                                  );*/
+                                }
+
+
+                              },
                               message: message ?? Messages(),
                               isSeen: true,
                               isMe: false,
@@ -312,6 +480,15 @@ class _BroadcastPageState extends State<BroadcastPage> {
                               currentUser: currentuser ?? '2',
                               //MessageHelper.itemCount,
                               type: message.type.toString(),
+                              currentUserImage: userData?.image ?? '',
+                              audioPlayer: _soundPlayer, // Pass the audio player instance
+                              isPlaying: message.isplaying ?? false,
+                              isBuffering: message.isBuffering ?? false,
+                              currentPosition: message.currentPosition ?? Duration.zero,
+                              totalDuration: message.totalDuration ?? Duration.zero,
+                              playAudio: playAudio,
+                              stopAudio: stopAudio,
+                              formatDuration: formatDuration,
                             )
                           ],
                         );
@@ -377,24 +554,45 @@ class _BroadcastPageState extends State<BroadcastPage> {
                                       ),
                                     ),
                                   ),
+                                  _isRecording
+                                      ? Text(_formatTime(_elapsedTime))
+                                      : Row(children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          pickfiles();
+                                        },
+                                        child:
+                                        const Icon(Icons.attach_file)),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    GestureDetector(
+                                        onTap: () {
+                                          showAlertDialog(context);
+                                        },
+                                        child:
+                                        const Icon(Icons.camera_alt)),
+                                    const SizedBox(
+                                      width: 10,
+                                    )
+                                  ],),
                                   GestureDetector(
-                                      onTap: () {
-                                        pickfiles();
+                                    // onPanStart: (f){
+                                    //   _startRecording();
+                                    // },
+                                    // onPanEnd: (d){
+                                    //   _stopRecording();
+                                    // },
+                                      onTap: (){
+                                        if(_isRecording){
+                                          _stopRecording();
+                                        }else {
+                                          _startRecording();
+                                        }
+
                                       },
                                       child:
-                                      const Icon(Icons.attach_file)),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  GestureDetector(
-                                      onTap: () {
-                                        showAlertDialog(context);
-                                      },
-                                      child:
-                                      const Icon(Icons.camera_alt)),
-                                  const SizedBox(
-                                    width: 5,
-                                  )
+                                      Icon(_isRecording ? Icons.stop : Icons.mic,)),
                                 ],
                               ),
                             ),
@@ -846,13 +1044,39 @@ class MessageBubble extends StatelessWidget {
     required this.listLength,
     required this.isSeen,
     required this.type,
+    required this.onLongPress,
+
+
+    required this.isPlaying,
+    required this.isBuffering,
+    required this.currentPosition,
+    required this.totalDuration,
+    required this.playAudio,
+    required this.stopAudio,
+    required this.formatDuration,
+    required this.audioPlayer,
+
     required this.currentUser,
+    this.currentUserImage
   });
 
   final bool isMe;
   final String type;
   final String currentUser;
+  final String? currentUserImage;
+
   final Messages message;
+  final VoidCallback onLongPress;
+
+
+  final bool isPlaying;
+  final bool isBuffering;
+  final Duration currentPosition;
+  final Duration totalDuration;
+  final Function(String, int) playAudio;
+  final Function (int)stopAudio;
+  final String Function(Duration) formatDuration;
+  final FlutterSoundPlayer audioPlayer;
 
   final String time;
   final VoidCallback onPress;
@@ -886,7 +1110,9 @@ class MessageBubble extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CircleAvatar(radius: 10,backgroundColor: Colors.blue,),
+                    message.createdBy.toString() == currentUser
+                        ?  CircleAvatar(radius: 10,backgroundColor: Colors.blue,child: ClipOval(child: AppImage(image: '${AppUrl.profileURL}${currentUserImage}', ),),)
+                        : const CircleAvatar(radius: 10,backgroundColor: Colors.blue,child: ClipOval(child: AppImage(image: '',personImage: true, ),),),
                     const SizedBox(width: 5,),
                     Material(
                       elevation: 1,
@@ -977,9 +1203,29 @@ class MessageBubble extends StatelessWidget {
             ),
 
           if (message.type == 2 &&
+              (isImage == 'aac' ))
+            Align(
+              alignment: message.createdBy.toString() == currentUser
+                  ? Alignment.centerRight
+                  : Alignment.centerLeft,
+              child: ChatBubble(
+                message: message,
+                audioPlayer: audioPlayer, // Pass the audio player instance
+                isPlaying: isPlaying,
+                isBuffering: isBuffering,
+                currentPosition: currentPosition,
+                totalDuration: totalDuration,
+                playAudio: playAudio,
+                stopAudio: stopAudio,
+                formatDuration: formatDuration,
+                index: index,
+              ),
+            ),
+
+          if (message.type == 2 &&
               isImage != 'jpg' &&
               isImage != 'jpeg' &&
-              isImage != 'png')
+              isImage != 'png' &&isImage != 'aac' )
             Align(
               alignment: message.createdBy.toString() == currentUser
                   ? Alignment.centerRight

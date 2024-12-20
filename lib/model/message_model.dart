@@ -41,10 +41,15 @@ class   Messages {
   int? createdBy;
   String? createdAt;
   String? senderName;
+  bool? isplaying ;
+  bool? isBuffering ;
+  bool? isSelected ;
+  Duration? currentPosition ;
+  Duration? totalDuration ;
 
 
 
-  Messages({this.id, this.message, this.type, this.createdBy, this.createdAt,this.senderName});
+  Messages({this.id, this.message, this.type, this.createdBy, this.createdAt,this.senderName, this.currentPosition, this.totalDuration,this.isplaying,this.isBuffering,this.isSelected});
 
   Messages.fromJson(Map<String, dynamic> json) {
 
@@ -56,6 +61,11 @@ class   Messages {
     type = json['type'];
     createdBy = json['created_by'];
     createdAt = json['created_at'];
+    isplaying = false ;
+    isSelected = false;
+    currentPosition = Duration.zero;
+    totalDuration = Duration.zero;
+
   }
 
   Map<String, dynamic> toJson() {

@@ -82,7 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> refresh() async {
     await Future.delayed(
-        Duration(milliseconds: 100)); // Simulate a network call
+        const Duration(milliseconds: 100)); // Simulate a network call
     setState(() {
       getUserList();
     });
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: MyColor.white,
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Add People"),
+        title: const Text("Chats"),
         actions: [
           PopupMenuButton(
             color: MyColor.primary,
@@ -239,19 +239,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           chatListData: users,
                                                         )));
                                           } else {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        GroupPage(
-                                                          name: users.title
-                                                              .toString(),
-                                                          image: users.imageUrl
-                                                              .toString(),
-                                                          friendId: users.id
-                                                              .toString(),
-                                                          chatListData: users,
-                                                        )));
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          GroupPage(
+                                                            name: users.title
+                                                                .toString(),
+                                                            image: users.imageUrl
+                                                                .toString(),
+                                                            friendId: users.id
+                                                                .toString(),
+                                                            chatListData: users,
+                                                          )));
                                           }
                                         },
                                         child: Container(

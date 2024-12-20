@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
@@ -41,6 +42,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   bool isAdmin = false;
 
   Function? dialogSetState;
+  Chatroom? chatRoomData ;
 
   @override
   void initState() {
@@ -108,9 +110,9 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                             ),
                           ),
                           const SizedBox(height: 8),
-                          const Text(
-                            'Created by Admin, today at 2:01 PM',
-                            style: TextStyle(
+                           Text(
+                            'Created by ${isAdmin ? 'You' : chatRoomData?.user?.name ?? ''}, ${DateFormat('MMM dd yyyy').format(DateTime.parse(chatRoomData!.createdAt!))}',
+                            style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
                             ),
@@ -211,6 +213,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                         ),
                       ),
                       title: Text('${data?.user?.fName}'),
+                      subtitle: Text( isAdmin ? '${data?.user?.phone}' : ''),
                       onTap: () {},
                       onLongPress: data?.user?.id != userData?.id && isAdmin ?  ()  {
 
@@ -492,6 +495,11 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         widget.chatListData = MyChatListModel.fromJson(data).data?.first;
 
         widget.chatListData?.chatroom?.forEach((element) {
+
+          if(element.isAdmin == 1){
+            chatRoomData = element ;
+          }
+
           if(element.user?.id == userData?.id && element.isAdmin == 1){
             isAdmin = true ;
           }

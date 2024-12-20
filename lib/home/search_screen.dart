@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ut_messenger/chat/group_page.dart';
 import 'package:ut_messenger/helper/colors.dart';
 import 'package:http/http.dart'as http;
 import 'package:ut_messenger/model/chatlist_model.dart';
@@ -53,17 +54,20 @@ class _SearchScreenState extends State<SearchScreen> {
   searchMock(String value) {
     final suggestions = tempList.where((element) {
       final username = element.title?.toLowerCase();
+      String? description = element.description?.toLowerCase();
       final input = value.toLowerCase();
-      return username?.contains(input) ?? false /*||  firmName!.contains(input)*//* || mobile.contains(input) ||  firmName.contains(input)*/;
-    })?.toList();
-    userList = suggestions!;
+
+
+      return username!.contains(input)  ||  description!.contains(input)  ; /*||  firmName!.contains(input)*//* || mobile.contains(input) ||  firmName.contains(input)*/;
+    }).toList();
+    userList = suggestions;
     setState(() {
 
     });
 
     // update();
   }
-  TextEditingController searchController=TextEditingController();
+  TextEditingController searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +91,7 @@ class _SearchScreenState extends State<SearchScreen> {
               child: ListView.builder(
                 itemCount: userList.length ,
                 itemBuilder: (context, index) {
-                  return  vId == userList[index].id ? const SizedBox() :
+                  return  vId == userList[index].id || userList[index].type ==3 ? const SizedBox() :
                  ListTile(
                   leading:  CircleAvatar(
 
@@ -104,7 +108,19 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       child:  GestureDetector(
                         onTap:  () async {
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      GroupPage(
+                                        name: userList[index].title
+                                            .toString(),
+                                        image: userList[index].imageUrl
+                                            .toString(),
+                                        friendId: userList[index].id
+                                            .toString(),
+                                        chatListData: userList[index],
+                                      )));
                         },
                         child:  const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.0,vertical: 5),

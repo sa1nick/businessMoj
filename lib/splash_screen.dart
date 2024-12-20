@@ -46,10 +46,10 @@ class _SplashScreenState extends State<SplashScreen> {
         backgroundColor: Colors.black,
         body: Center(
           child: SizedBox(
-            width: 150,
-            height: 150,
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
             child: Image.asset(
-              "assets/images/logo.png",
+              "assets/images/splashImage.png",
               // fit: BoxFit.fill,
               fit: BoxFit.cover,
             ),
