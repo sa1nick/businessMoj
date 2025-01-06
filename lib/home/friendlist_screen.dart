@@ -168,23 +168,15 @@ class _FriendListScreenState extends State<FriendListScreen> {
               ),
             ),
             loading
-                ? Column(
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height/3,),
-                    const Center(
-                        child: CircularProgressIndicator(
-                          color: MyColor.primary,
-                        ),
-                      ),
-                  ],
+                ? const Expanded(
+                  child: Center(
+                                child: CircularProgressIndicator(
+                  color: MyColor.primary,
+                                ),
+                              ),
                 )
                 : myContactsList.isEmpty
-                    ? Column(
-                      children: [
-                        SizedBox(height: MediaQuery.of(context).size.height/3,),
-                        const Center(child: Text("No Friends")),
-                      ],
-                    )
+                    ? const Expanded(child: Center(child: Text("No Friends")))
                     : Expanded(
                         child: ListView.builder(
                             itemCount: myContactsList.length,
@@ -272,13 +264,13 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              friend.name.toString(),
+                                              friend.name == '' ? 'Unknown'  : friend.name ?? 'Unknown',
                                               style: const TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             Text(
-                                              friend.name.toString(),
+                                              friend.phone ?? '',
                                               style: const TextStyle(
                                                 fontSize: 15,
                                               ),
@@ -293,17 +285,16 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          GroupPage(
-                                                            name: friend.name
-                                                                .toString(),
-                                                            image: friend
-                                                                .image
-                                                                .toString(),
-                                                            friendId: friend!.id
-                                                                .toString(),
+                                                      builder: (context) => GroupPage(
+                                                            name: friend.name.toString(),
+                                                            image: friend.image.toString(),
+                                                            friendId: friend.id.toString(),
                                                             myRoomId: friend.roomId,
-                                                          )));
+                                                          ))).then((value) {
+
+                                                contactPermission();
+
+                                                          },);
                                             },
                                             child: Padding(
                                               padding:
@@ -355,6 +346,8 @@ class _FriendListScreenState extends State<FriendListScreen> {
       http.Response response = await http.post(Uri.parse(AppUrl.friendList),
           body: {"list": contact.join(',')}, headers: headers);
 
+      print(contact.join(','));
+
       log(token!);
 
       if (response.statusCode == 200) {
@@ -404,8 +397,31 @@ class _FriendListScreenState extends State<FriendListScreen> {
   bool isLoading = false;
 
   String normalizePhoneNumber(String phoneNumber) {
-    // Normalize the phone number (remove spaces, dashes, etc.)
-    return phoneNumber.replaceAll(RegExp(r'\D'), '');
+    // Remove non-digit characters
+    phoneNumber = phoneNumber.replaceAll(RegExp(r'\D'), '');
+
+    // Remove leading '+' if present
+    if (phoneNumber.startsWith('+')) {
+      phoneNumber = phoneNumber.substring(1);
+    }
+
+    // Remove country code '91' if present
+    if (phoneNumber.startsWith('91') && phoneNumber.length > 10) {
+      phoneNumber = phoneNumber.substring(2);
+    }
+
+    // Remove leading '0' if present
+    if (phoneNumber.startsWith('0') && phoneNumber.length > 10) {
+      phoneNumber = phoneNumber.substring(1);
+    }
+
+    // Ensure the number is exactly 10 digits
+    if (phoneNumber.length == 10 && RegExp(r'^\d{10}$').hasMatch(phoneNumber)) {
+      return phoneNumber;
+    }
+
+    // Return empty string for invalid numbers
+    return '';
   }
 
   List<MyContactModel> tempList = [];

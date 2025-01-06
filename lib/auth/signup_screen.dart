@@ -65,7 +65,7 @@ class _SignUpPageState extends State<SignUpPage> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          "Sign Up",
+          "",//Sign Up
           style: TextStyle(
               fontSize: 20, fontWeight: FontWeight.bold,color: MyColor.black),
         ),
@@ -196,12 +196,14 @@ class _SignUpPageState extends State<SignUpPage> {
                               borderSide: BorderSide.none,
                             ),
                           ),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.black,
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter a Mobile Number';
+                            }else if (value!.length < 10){
+                              return 'Please enter valid Mobile Number';
                             }
                             return null;
                           },
@@ -350,7 +352,7 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
-        child: Container(
+        child: SizedBox(
           height: 100,
           child: Column(
             children: [
@@ -384,31 +386,29 @@ class _SignUpPageState extends State<SignUpPage> {
                               fontSize: 16))),
                 ),
               ),
-              SizedBox(height: 20),
-              Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "Already have an account? ",
-                      style: TextStyle(fontSize: 14, color: MyColor.black),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Already have an account? ",
+                    style: TextStyle(fontSize: 14, color: MyColor.black),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                            (Route<dynamic> route) => false, // This removes all the previous routes.
+                      );
+                    },
+                    child: const Text(
+                      "SignIn",
+                      style: TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold, color: MyColor.primary),
                     ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                              (Route<dynamic> route) => false, // This removes all the previous routes.
-                        );
-                      },
-                      child: const Text(
-                        "SignIn",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold, color: MyColor.primary),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -485,7 +485,8 @@ class _SignUpPageState extends State<SignUpPage> {
       });
       var result = await response.stream.bytesToString();
       var finalResult = jsonDecode(result);
-      Fluttertoast.showToast(msg: "${finalResult['error'][0]['message']}");
+      print('${finalResult}');
+      Fluttertoast.showToast(msg: "${finalResult['errors'][0]['message']}");
     } else {
       setState(() {
         isLoading = false;
@@ -500,4 +501,4 @@ class _SignUpPageState extends State<SignUpPage> {
 
 }
 
-//com.utmessenger.main
+//com.businessmoj.main

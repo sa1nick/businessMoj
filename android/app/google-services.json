@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "376834769488",
-    "project_id": "ut-messenger-ac288",
-    "storage_bucket": "ut-messenger-ac288.firebasestorage.app"
+    "project_number": "157135741762",
+    "project_id": "businessmoj-6b0b0",
+    "storage_bucket": "businessmoj-6b0b0.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:376834769488:android:47ec8371ba4e91ce6a8755",
+        "mobilesdk_app_id": "1:157135741762:android:d2719d66d58709cce61edb",
         "android_client_info": {
-          "package_name": "com.utmessenger.main"
+          "package_name": "com.businessmoj.main"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAQSjYwzHRAEjCoVYKOTLapvE6bTaFMftU"
+          "current_key": "AIzaSyAiUTeYzzq4nD7btvbHV_XRJP10r2q8q68"
         }
       ],
       "services": {

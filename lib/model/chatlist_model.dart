@@ -45,6 +45,8 @@ class ChatListData {
   int? updatedBy;
   String? imageUrl;
   String? unreadCount;
+  String? lastUnreadDate;
+  bool? isSelected ;
   List<Chatroom>? chatroom;
 
   ChatListData(
@@ -62,14 +64,17 @@ class ChatListData {
         this.updatedAt,
         this.updatedBy,
         this.imageUrl,
-        this.chatroom,this.unreadCount});
+        this.lastUnreadDate,
+        this.chatroom,this.unreadCount,this.isSelected});
 
   ChatListData.fromJson(Map<String, dynamic> json) {
+
     id = json['id'];
     title = json['title'];
     orderId = json['order_id'];
     clubId = json['club_id'];
     unreadCount = json['unread_count'].toString();
+    lastUnreadDate = json['last_unread'] != null && json['last_unread'] !=''?  json['last_unread'].toString() : DateTime.now().copyWith(day: 01,month: 1,year: 2023).toString();
     type = json['type'];
     image = json['image'];
     description = json['description'];
@@ -80,6 +85,7 @@ class ChatListData {
     updatedAt = json['updated_at'];
     updatedBy = json['updated_by'];
     imageUrl = json['image_url'];
+    isSelected = false ;
     if (json['chatroom'] != null) {
       chatroom = <Chatroom>[];
       json['chatroom'].forEach((v) {

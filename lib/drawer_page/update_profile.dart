@@ -48,403 +48,405 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         title: Text("Update Profile"),
         centerTitle: true,
       ),
-      body: loading ? const Center(child: CircularProgressIndicator(color: MyColor.primary,)) : Padding(
+      body: loading ? const Center(child: CircularProgressIndicator(color: MyColor.primary,)) : SingleChildScrollView(
         padding: const EdgeInsets.symmetric(
             horizontal: 15.0, vertical: 5),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-             Expanded(
-                child: ListView(
-                  children: [
-                    SizedBox(height: 10,),
+             Column(
+               crossAxisAlignment: CrossAxisAlignment.start,
 
-                    Stack(
-                        children:[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              InkWell(
-                                onTap: () {
-                                  pickImage();
-                                },
-                                child: CircleAvatar(
-                                  backgroundColor: MyColor.primary,
-                                  radius: 55,
-                                  child: _profileImage != null
-                                      ? CircleAvatar(
-                                    backgroundImage: FileImage(File(_profileImage!.path)),
-                                    radius: 50,
-                                    child: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 35,
-                                      color: Colors.grey,
-                                    ),
-                                  )
-                                      : CircleAvatar(
-                                    backgroundColor: MyColor.white,
-                                    backgroundImage: NetworkImage(
-                                      getProfileModel!.image!,
-                                    ),
-                                    radius: 50,
-                                    child: const Icon(
-                                      Icons.camera_alt_outlined,
-                                      size: 35,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),]
-                    ),
+               children: [
+                 const SizedBox(height: 10,),
 
-
-
-
-                    // Stack(
-                    //   children: [
-                    //     Center(
-                    //       child: GestureDetector(
-                    //         onTap: () {
-                    //           setState(() {
-                    //             pickImage();
-                    //           });
-                    //         },
-                    //         child: Container(
-                    //             height: 100,
-                    //             width: 100,
-                    //             decoration: BoxDecoration(
-                    //               color: MyColor.secondaryLight,
-                    //               borderRadius:
-                    //               BorderRadius.circular(10),
-                    //               border: Border.all(
-                    //                   color:
-                    //                   MyColor.primary),
-                    //             ),
-                    //             child:
-                    //             getProfileModel?.image !=
-                    //                 ""
-                    //                 ? ClipRRect(
-                    //                 borderRadius:
-                    //                 BorderRadius.circular(
-                    //                     10),
-                    //                 child: Image.network(
-                    //                   getProfileModel!.image!,
-                    //                   height: 120,
-                    //                   width: 120,
-                    //                   fit: BoxFit.cover,
-                    //                 ))
-                    //                 : _profileImage != null
-                    //                 ? ClipRRect(
-                    //               borderRadius:
-                    //               BorderRadius
-                    //                   .circular(10),
-                    //               child: Image.file(
-                    //                 _profileImage!,
-                    //                 height: 120,
-                    //                 width: 120,
-                    //                 fit: BoxFit.cover,
-                    //               ),
-                    //             )
-                    //                 :
-                    //             const Column(
-                    //               mainAxisAlignment:
-                    //               MainAxisAlignment
-                    //                   .center,
-                    //               children: [
-                    //                 Icon(
-                    //                   Icons
-                    //                       .camera_alt_outlined,
-                    //                   color:
-                    //                   MyColor
-                    //                       .primary,
-                    //                 ),
-                    //                 Text("Profile Pic"),
-                    //               ],
-                    //             )),
-                    //       ),
-                    //     ),
-                    //     Padding(
-                    //       padding: const EdgeInsets.only(top: 85.0),
-                    //       child: Center(
-                    //         child: Container(
-                    //           height: 25,
-                    //           width: 25,
-                    //           decoration: const BoxDecoration(
-                    //               shape: BoxShape.circle,
-                    //               color: MyColor.primary),
-                    //           child: const Icon(
-                    //             Icons.edit,
-                    //             color: MyColor.white,
-                    //             size: 20,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     )
-                    //   ],
-                    // ),
-
-                    const Text("First Name",
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    TextFormField(
-                      readOnly: false,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      controller: _nameController,
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                          hintText: 'First Name',
-                          hintStyle: TextStyle(
-                              color: MyColor.black),
-                          filled: true,
-                          fillColor: MyColor.secondaryLight,
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: BorderSide.none),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: Color(0xffCCCCCC))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: MyColor
-                                      .primaryMaterial)),
-                          enabled: true,
-                          suffixIcon:
-                          _nameController.text.isNotEmpty
-                              ? IconButton(
-                            color: MyColor
-                                .primaryMaterial,
-                            icon: const Icon(Icons.clear,
-                                size: 16),
-                            onPressed: () {
-                              setState(() {
-                                _nameController.clear();
-                              });
-                            },
-                          )
-                              : null),
-                    ),
-                    const SizedBox(height: 20),
-
-                    const Text("Last Name",
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    TextFormField(
-                      readOnly: false,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      controller: _lastnameController,
-                      keyboardType: TextInputType.text,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your name';
-                        }
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                          hintText: 'Last Name',
-                          hintStyle: TextStyle(
-                              color: MyColor.black),
-                          filled: true,
-                          fillColor: MyColor.secondaryLight,
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: BorderSide.none),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: Color(0xffCCCCCC))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: MyColor
-                                      .primaryMaterial)),
-                          enabled: true,
-                          suffixIcon:
-                          _nameController.text.isNotEmpty
-                              ? IconButton(
-                            color: MyColor
-                                .primaryMaterial,
-                            icon: const Icon(Icons.clear,
-                                size: 16),
-                            onPressed: () {
-                              setState(() {
-                                _nameController.clear();
-                              });
-                            },
-                          )
-                              : null),
-                    ),
-                    const SizedBox(height: 20),
-
-                    Text("Email ",
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    TextFormField(
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      controller: _emailController,
-                      keyboardType: TextInputType.text,
-                      validator: validateEmail,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                          hintText: 'No spam, we promise',
-                          hintStyle: TextStyle(
-                              color: MyColor.black),
-                          filled: true,
-                          fillColor: MyColor.secondaryLight,
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: BorderSide.none),
-                          enabledBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: Color(0xffCCCCCC))),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.circular(8),
-                              borderSide: const BorderSide(
-                                  color: MyColor
-                                      .primaryMaterial)),
-                          enabled: true,
-                          suffixIcon:
-                          _emailController.text.isNotEmpty
-                              ? IconButton(
-                            color: MyColor
-                                .primaryMaterial,
-                            icon: const Icon(Icons.clear,
-                                size: 16),
-                            onPressed: () {
-                              setState(() {
-                                _emailController.clear();
-                              });
-                            },
-                          )
-                              : null),
-                    ),
-                    const SizedBox(height: 20),
-
-                    Text("Mobile",
-                        style: TextStyle(fontSize: 16)),
-                    const SizedBox(height: 4),
-                    TextFormField(
-                      readOnly: true,
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                      controller: _mobileController,
-                      keyboardType: TextInputType.text,
-                      decoration: InputDecoration(
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(
-                              left: 15.0, top: 15, bottom: 15),
-                          child: Text("+91"),
-                        ),
-                        hintText: 'Type the Mobile',
-                        hintStyle: TextStyle(
-                            color: MyColor.black),
-                        filled: true,
-                        fillColor: MyColor.secondaryLight,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none),
-                        enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                                color: Color(0xffCCCCCC))),
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: const BorderSide(
-                                color: MyColor
-                                    .primaryMaterial)),
-                        enabled: true,
-                        // suffixIcon: _addressController.text.isNotEmpty ? IconButton(
-                        //   color: ColorResources.primaryMaterial,
-                        //   icon: const Icon(Icons.clear, size: 16),
-                        //   onPressed: () {
-                        //     setState(() {
-                        //       _addressController.clear();
-                        //     });
-                        //   },
-                        // )
-                        //     : null
-                      ),
-                    ),
-                    const SizedBox(height: 20),
+                 Stack(
+                     children:[
+                       Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children: [
+                           InkWell(
+                             onTap: () {
+                               pickImage();
+                             },
+                             child: CircleAvatar(
+                               backgroundColor: MyColor.primary,
+                               radius: 55,
+                               child: _profileImage != null
+                                   ? CircleAvatar(
+                                 backgroundImage: FileImage(File(_profileImage!.path)),
+                                 radius: 50,
+                                 child: const Icon(
+                                   Icons.camera_alt_outlined,
+                                   size: 35,
+                                   color: Colors.grey,
+                                 ),
+                               )
+                                   : CircleAvatar(
+                                 backgroundColor: MyColor.white,
+                                 backgroundImage: NetworkImage(
+                                   getProfileModel!.image!,
+                                 ),
+                                 radius: 50,
+                                 child: const Icon(
+                                   Icons.camera_alt_outlined,
+                                   size: 35,
+                                   color: Colors.grey,
+                                 ),
+                               ),
+                             ),
+                           ),
+                         ],
+                       ),]
+                 ),
 
 
-                    // const Text("Password",
-                    //     style: TextStyle(fontSize: 16)),
-                    // const SizedBox(height: 4),
-                    // TextFormField(
-                    //   onChanged: (value) {
-                    //     setState(() {});
-                    //   },
-                    //   controller: _passController,
-                    //   keyboardType: TextInputType.text,
-                    //   decoration: InputDecoration(
-                    //       hintText: 'Password',
-                    //       hintStyle:const TextStyle(
-                    //           color: MyColor.black),
-                    //       filled: true,
-                    //       fillColor: MyColor.secondaryLight,
-                    //       border: OutlineInputBorder(
-                    //           borderRadius:
-                    //           BorderRadius.circular(8),
-                    //           borderSide: BorderSide.none),
-                    //       enabledBorder: OutlineInputBorder(
-                    //           borderRadius:
-                    //           BorderRadius.circular(8),
-                    //           borderSide: const BorderSide(
-                    //               color: Color(0xffCCCCCC))),
-                    //       focusedBorder: OutlineInputBorder(
-                    //           borderRadius:
-                    //           BorderRadius.circular(8),
-                    //           borderSide: const BorderSide(
-                    //               color: MyColor
-                    //                   .primaryMaterial)),
-                    //       enabled: true,
-                    //       suffixIcon: _passController.text.isNotEmpty
-                    //           ? IconButton(
-                    //         color: MyColor
-                    //             .primaryMaterial,
-                    //         icon: const Icon(Icons.clear,
-                    //             size: 16),
-                    //         onPressed: () {
-                    //           setState(() {
-                    //             _passController.clear();
-                    //           });
-                    //         },
-                    //       )
-                    //           : null),
-                    // ),
-                    // const SizedBox(height: 20),
 
-                  ],
-                ),
-              ),
+
+                 // Stack(
+                 //   children: [
+                 //     Center(
+                 //       child: GestureDetector(
+                 //         onTap: () {
+                 //           setState(() {
+                 //             pickImage();
+                 //           });
+                 //         },
+                 //         child: Container(
+                 //             height: 100,
+                 //             width: 100,
+                 //             decoration: BoxDecoration(
+                 //               color: MyColor.secondaryLight,
+                 //               borderRadius:
+                 //               BorderRadius.circular(10),
+                 //               border: Border.all(
+                 //                   color:
+                 //                   MyColor.primary),
+                 //             ),
+                 //             child:
+                 //             getProfileModel?.image !=
+                 //                 ""
+                 //                 ? ClipRRect(
+                 //                 borderRadius:
+                 //                 BorderRadius.circular(
+                 //                     10),
+                 //                 child: Image.network(
+                 //                   getProfileModel!.image!,
+                 //                   height: 120,
+                 //                   width: 120,
+                 //                   fit: BoxFit.cover,
+                 //                 ))
+                 //                 : _profileImage != null
+                 //                 ? ClipRRect(
+                 //               borderRadius:
+                 //               BorderRadius
+                 //                   .circular(10),
+                 //               child: Image.file(
+                 //                 _profileImage!,
+                 //                 height: 120,
+                 //                 width: 120,
+                 //                 fit: BoxFit.cover,
+                 //               ),
+                 //             )
+                 //                 :
+                 //             const Column(
+                 //               mainAxisAlignment:
+                 //               MainAxisAlignment
+                 //                   .center,
+                 //               children: [
+                 //                 Icon(
+                 //                   Icons
+                 //                       .camera_alt_outlined,
+                 //                   color:
+                 //                   MyColor
+                 //                       .primary,
+                 //                 ),
+                 //                 Text("Profile Pic"),
+                 //               ],
+                 //             )),
+                 //       ),
+                 //     ),
+                 //     Padding(
+                 //       padding: const EdgeInsets.only(top: 85.0),
+                 //       child: Center(
+                 //         child: Container(
+                 //           height: 25,
+                 //           width: 25,
+                 //           decoration: const BoxDecoration(
+                 //               shape: BoxShape.circle,
+                 //               color: MyColor.primary),
+                 //           child: const Icon(
+                 //             Icons.edit,
+                 //             color: MyColor.white,
+                 //             size: 20,
+                 //           ),
+                 //         ),
+                 //       ),
+                 //     )
+                 //   ],
+                 // ),
+
+                 const Text("First Name",
+                     style: TextStyle(fontSize: 16)),
+                 const SizedBox(height: 4),
+                 TextFormField(
+                   readOnly: false,
+                   onChanged: (value) {
+                     setState(() {});
+                   },
+                   controller: _nameController,
+                   keyboardType: TextInputType.text,
+                   validator: (value) {
+                     if (value == null || value.isEmpty) {
+                       return 'Please enter your name';
+                     }
+                     return null;
+                   },
+                   decoration: InputDecoration(
+                       hintText: 'First Name',
+                       hintStyle: TextStyle(
+                           color: MyColor.black),
+                       filled: true,
+                       fillColor: MyColor.secondaryLight,
+                       border: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: BorderSide.none),
+                       enabledBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: Color(0xffCCCCCC))),
+                       focusedBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: MyColor
+                                   .primaryMaterial)),
+                       enabled: true,
+                       suffixIcon:
+                       _nameController.text.isNotEmpty
+                           ? IconButton(
+                         color: MyColor
+                             .primaryMaterial,
+                         icon: const Icon(Icons.clear,
+                             size: 16),
+                         onPressed: () {
+                           setState(() {
+                             _nameController.clear();
+                           });
+                         },
+                       )
+                           : null),
+                 ),
+                 const SizedBox(height: 20),
+
+                 const Text("Last Name",
+                     style: TextStyle(fontSize: 16)),
+                 const SizedBox(height: 4),
+                 TextFormField(
+                   readOnly: false,
+                   onChanged: (value) {
+                     setState(() {});
+                   },
+                   controller: _lastnameController,
+                   keyboardType: TextInputType.text,
+                   validator: (value) {
+                     if (value == null || value.isEmpty) {
+                       return 'Please enter your name';
+                     }
+                     return null;
+                   },
+                   decoration: InputDecoration(
+                       hintText: 'Last Name',
+                       hintStyle: const TextStyle(
+                           color: MyColor.black),
+                       filled: true,
+                       fillColor: MyColor.secondaryLight,
+                       border: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: BorderSide.none),
+                       enabledBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: Color(0xffCCCCCC))),
+                       focusedBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: MyColor
+                                   .primaryMaterial)),
+                       enabled: true,
+                       suffixIcon:
+                       _lastnameController.text.isNotEmpty
+                           ? IconButton(
+                         color: MyColor
+                             .primaryMaterial,
+                         icon: const Icon(Icons.clear,
+                             size: 16),
+                         onPressed: () {
+                           setState(() {
+                             _lastnameController.clear();
+                           });
+                         },
+                       )
+                           : null),
+                 ),
+                 const SizedBox(height: 20),
+
+                 const Text("Email ",
+                     style: TextStyle(fontSize: 16)),
+                 const SizedBox(height: 4),
+                 TextFormField(
+                   onChanged: (value) {
+                     setState(() {});
+                   },
+                   controller: _emailController,
+                   keyboardType: TextInputType.text,
+                   validator: validateEmail,
+                   readOnly: getProfileModel!.email?.isEmpty ?? true ?  false : true,
+                   decoration: InputDecoration(
+                       hintText: 'Email',
+                       hintStyle: const TextStyle(
+                           color: MyColor.black),
+                       filled: true,
+                       fillColor: MyColor.secondaryLight,
+                       border: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: BorderSide.none),
+                       enabledBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: Color(0xffCCCCCC))),
+                       focusedBorder: OutlineInputBorder(
+                           borderRadius:
+                           BorderRadius.circular(8),
+                           borderSide: const BorderSide(
+                               color: MyColor
+                                   .primaryMaterial)),
+                       enabled: true,
+                       suffixIcon:
+                       /*_emailController.text.isNotEmpty*/false
+                           ? IconButton(
+                         color: MyColor
+                             .primaryMaterial,
+                         icon: const Icon(Icons.clear,
+                             size: 16),
+                         onPressed: () {
+                           setState(() {
+                             _emailController.clear();
+                           });
+                         },
+                       )
+                           : null),
+                 ),
+                 const SizedBox(height: 20),
+
+                 Text("Mobile",
+                     style: TextStyle(fontSize: 16)),
+                 const SizedBox(height: 4),
+                 TextFormField(
+                   readOnly: true,
+                   onChanged: (value) {
+                     setState(() {});
+                   },
+                   controller: _mobileController,
+                   keyboardType: TextInputType.text,
+                   decoration: InputDecoration(
+                     prefixIcon: const Padding(
+                       padding: EdgeInsets.only(
+                           left: 15.0, top: 15, bottom: 15),
+                       child: Text("+91"),
+                     ),
+                     hintText: 'Type the Mobile',
+                     hintStyle: TextStyle(
+                         color: MyColor.black),
+                     filled: true,
+                     fillColor: MyColor.secondaryLight,
+                     border: OutlineInputBorder(
+                         borderRadius: BorderRadius.circular(8),
+                         borderSide: BorderSide.none),
+                     enabledBorder: OutlineInputBorder(
+                         borderRadius: BorderRadius.circular(8),
+                         borderSide: const BorderSide(
+                             color: Color(0xffCCCCCC))),
+                     focusedBorder: OutlineInputBorder(
+                         borderRadius: BorderRadius.circular(8),
+                         borderSide: const BorderSide(
+                             color: MyColor
+                                 .primaryMaterial)),
+                     enabled: true,
+                     // suffixIcon: _addressController.text.isNotEmpty ? IconButton(
+                     //   color: ColorResources.primaryMaterial,
+                     //   icon: const Icon(Icons.clear, size: 16),
+                     //   onPressed: () {
+                     //     setState(() {
+                     //       _addressController.clear();
+                     //     });
+                     //   },
+                     // )
+                     //     : null
+                   ),
+                 ),
+                 const SizedBox(height: 20),
+
+
+                 // const Text("Password",
+                 //     style: TextStyle(fontSize: 16)),
+                 // const SizedBox(height: 4),
+                 // TextFormField(
+                 //   onChanged: (value) {
+                 //     setState(() {});
+                 //   },
+                 //   controller: _passController,
+                 //   keyboardType: TextInputType.text,
+                 //   decoration: InputDecoration(
+                 //       hintText: 'Password',
+                 //       hintStyle:const TextStyle(
+                 //           color: MyColor.black),
+                 //       filled: true,
+                 //       fillColor: MyColor.secondaryLight,
+                 //       border: OutlineInputBorder(
+                 //           borderRadius:
+                 //           BorderRadius.circular(8),
+                 //           borderSide: BorderSide.none),
+                 //       enabledBorder: OutlineInputBorder(
+                 //           borderRadius:
+                 //           BorderRadius.circular(8),
+                 //           borderSide: const BorderSide(
+                 //               color: Color(0xffCCCCCC))),
+                 //       focusedBorder: OutlineInputBorder(
+                 //           borderRadius:
+                 //           BorderRadius.circular(8),
+                 //           borderSide: const BorderSide(
+                 //               color: MyColor
+                 //                   .primaryMaterial)),
+                 //       enabled: true,
+                 //       suffixIcon: _passController.text.isNotEmpty
+                 //           ? IconButton(
+                 //         color: MyColor
+                 //             .primaryMaterial,
+                 //         icon: const Icon(Icons.clear,
+                 //             size: 16),
+                 //         onPressed: () {
+                 //           setState(() {
+                 //             _passController.clear();
+                 //           });
+                 //         },
+                 //       )
+                 //           : null),
+                 // ),
+                 // const SizedBox(height: 20),
+
+               ],
+             ),
+
+              const SizedBox(height: 50,),
 
               // Continue Button
               Align(
@@ -598,6 +600,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         'f_name': _nameController.text,
         'l_name': _lastnameController.text,
         'phone': _mobileController.text,
+        'email': _emailController.text,
         // 'password': _passController.text,
       });
 

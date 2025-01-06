@@ -41,6 +41,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   bool isUpdating = false;
   bool isAdmin = false;
 
+  bool? onlyAdminCanSendMessage;
+
   Function? dialogSetState;
   Chatroom? chatRoomData ;
 
@@ -111,7 +113,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                           ),
                           const SizedBox(height: 8),
                            Text(
-                            'Created by ${isAdmin ? 'You' : chatRoomData?.user?.name ?? ''}, ${DateFormat('MMM dd yyyy').format(DateTime.parse(chatRoomData!.createdAt!))}',
+                            'Created by ${isAdmin ? 'You' : chatRoomData?.user?.name ?? ''}, ${DateFormat('MMM dd yyyy').format(DateTime.parse(chatRoomData?.createdAt ?? DateTime.now().toString()))}',
                             style: const TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
@@ -212,7 +214,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                           ),
                         ),
                       ),
-                      title: Text('${data?.user?.fName}'),
+                      title: Text( data?.user?.fName != '' ?  '${data?.user?.fName}' : 'Unknown'),
                       subtitle: Text( isAdmin ? '${data?.user?.phone}' : ''),
                       onTap: () {},
                       onLongPress: data?.user?.id != userData?.id && isAdmin ?  ()  {
@@ -288,6 +290,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     nameC.text = widget.chatListData?.title ?? '';
     descriptionC.text = widget.chatListData?.description ?? '';
     String imageUrl = widget.chatListData?.imageUrl ?? '';
+
     return StatefulBuilder(
       builder: (context, dialogSate) {
         dialogSetState = dialogSate;
@@ -296,7 +299,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             borderRadius: BorderRadius.circular(15),
           ),
           title:  Text(
-            widget.fromBroadcast ?? false ?  'Update Group' : 'Update Broadcast',
+            widget.fromBroadcast ?? true ?  'Update Group' : 'Update Broadcast',
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
           actions: [
@@ -362,6 +365,20 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                 fillColor: MyColor.primary.withOpacity(0.2),
               ),
             ),
+            isAdmin ?  Row(children: [
+              Checkbox(
+                value: onlyAdminCanSendMessage, onChanged: (value){
+
+                onlyAdminCanSendMessage = value ;
+
+                dialogSate((){});
+
+              },activeColor: MyColor.primary,),
+              const Text(
+                'Only admin can send message*' ,
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],) : const SizedBox(),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: MyColor.primary,
@@ -401,10 +418,6 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       userData = UserData.fromJson(jsonDecode(userString));
     }
     getGroupDetail();
-
-
-
-
   }
 
   Future<void> updateGroupDetail() async {
@@ -418,6 +431,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       'group_id': widget.chatListData?.id.toString() ?? '',
       'group_name': nameC.text,
       'group_description': descriptionC.text,
+      'chat_access_group': onlyAdminCanSendMessage ?? false ? '1' :'2'
     });
 
     if (image != null) {
@@ -447,13 +461,13 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
 
   Future<void> removeGroupMember(String userid) async {
     try {
-      var headers = {'Authorization': 'Bearer $token'};
-      var body = {
-        'group_id': widget.chatListData?.id.toString(),
-        'user_id': userid
-      };
-      http.Response response = await http.post(Uri.parse(AppUrl.removeChatUser),
-          headers: headers, body: body);
+        var headers = {'Authorization': 'Bearer $token'};
+        var body = {
+          'group_id': widget.chatListData?.id.toString(),
+          'user_id': userid
+        };
+        http.Response response = await http.post(Uri.parse(AppUrl.removeChatUser),
+            headers: headers, body: body);
 
       print('${body}_______');
       print('${response.body}_______');
@@ -487,7 +501,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
               '${AppUrl.myChatList}/${widget.chatListData?.id.toString()}'),
           headers: headers);
       
-      print('${response.statusCode}____________fsdfd');
+      print('${widget.chatListData?.id}____________fsdfd');
 
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
@@ -504,6 +518,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
             isAdmin = true ;
           }
         },);
+
+        onlyAdminCanSendMessage = widget.chatListData?.chatAccessGroup == 1 ;
 
         setState(() {});
       } else {

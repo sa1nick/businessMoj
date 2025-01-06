@@ -24,10 +24,10 @@ Future<void> main() async {
   await NotificationController.startListeningNotificationEvents();
   await Firebase.initializeApp(
       options: const FirebaseOptions(
-          apiKey: 'AIzaSyAQSjYwzHRAEjCoVYKOTLapvE6bTaFMftU',
-          appId: '1:376834769488:android:47ec8371ba4e91ce6a8755',
-          messagingSenderId: '376834769488',
-          projectId: 'ut-messenger-ac288'));
+          apiKey: 'AIzaSyAiUTeYzzq4nD7btvbHV_XRJP10r2q8q68',
+          appId: '1:157135741762:android:d2719d66d58709cce61edb',
+          messagingSenderId: '157135741762',
+          projectId: 'businessmoj-6b0b0'));
   await NotificationController.initializeLocalNotifications();
   HttpOverrides.global = MyHttpOverrides();
 

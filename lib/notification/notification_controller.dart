@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:isolate';
 import 'dart:ui';
@@ -334,10 +335,14 @@ Future<void> myNotifyScheduleInHours({
 
 class NotificationController {
   static ReceivedAction? initialAction;
+  static final StreamController<RemoteMessage> _messageStreamController =
+  StreamController<RemoteMessage>.broadcast();
+  static Stream<RemoteMessage> get messageStream =>
+      _messageStreamController.stream;
 
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications().initialize(
-      'resource://mipmap/ic_launcher',
+      'resource://drawable/ic_launcher',
       [
         NotificationChannel(
           channelKey: 'alerts',
@@ -364,7 +369,6 @@ class NotificationController {
       badge: true,
       sound: true,
     );
-    print('User granted permission: ${settings.authorizationStatus}');
 
 
 
@@ -375,16 +379,19 @@ class NotificationController {
     print('FCM Token: $token');
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      _messageStreamController.add(message);
       handleFirebaseMessage(message);
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _messageStreamController.add(message);
       // Handle notification when the app is opened from a terminated state
       handleFirebaseMessage(message, onOpen: true);
     });
   }
 
   static ReceivePort? receivePort;
+
  static Future<void>  initializeIsolateReceivePort() async {
     receivePort = ReceivePort('Notification action port in main isolate')
       ..listen(
@@ -541,6 +548,8 @@ class NotificationController {
     String? title = message.notification?.title;
     String? body = message.notification?.body;
     String? messageType = message.data['type'] ?? 'text'; // Message type: 'text', 'audio_call', 'video_call'
+
+    print('${body}_____________body');
 
     // print(message.data);
     switch (messageType) {

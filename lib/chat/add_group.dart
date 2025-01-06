@@ -35,6 +35,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
 
   SharedPreferences? pref;
   String? token ;
+  bool isLoading = false ;
 
 @override
   void initState() {
@@ -55,13 +56,15 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
 
           if(nameC.text.isEmpty){
             Fluttertoast.showToast(msg: widget.fromBroadCast ?? false ? 'please add group name' : 'please add group Broadcast');
-          }else {
+          }else if(!(isLoading)){
             createGroup() ;
+          }else {
+
           }
 
 
         },
-      child: const Icon(Icons.check
+      child: isLoading ? const Center(child: CircularProgressIndicator(strokeWidth: 3,color: MyColor.white,),) : const Icon(Icons.check
       ),),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -126,7 +129,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
                 ),
 
             ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
 
           // Selected Members Section
           Text(
@@ -146,7 +149,7 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
                     backgroundColor: Colors.grey[300],
                     child: ClipOval(child: AppImage(image: data.image ?? '', width: 40, height: 40, personImage: true,),),
                   ),
-                  title: Text(data.name!),
+                  title: Text(data.name == '' ? 'Unknown' : data.name!),
                   trailing: IconButton(
                     icon: const Icon(Icons.remove_circle, color: Colors.red),
                     onPressed: () {
@@ -176,7 +179,10 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
 
  Future<void> createGroup() async{
 
-
+   isLoading = true ;
+   setState(() {
+     isLoading = true ;
+   });
 
    var headers = {
      'Authorization': 'Bearer $token'
@@ -211,9 +217,12 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
             MaterialPageRoute(builder: (context) => const BottomNavBarMain()));
       }
     }
+
    else {
      print(response.reasonPhrase);
    }
-
+   setState(() {
+     isLoading = false ;
+   });
  }
 }

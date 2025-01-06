@@ -1,4 +1,4 @@
-package com.utmessenger.main
+package com.businessmoj.main
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -9,44 +9,31 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="room id and unread count implemented.">
-      <change afterPath="$PROJECT_DIR$/assets/images/splashImage.png" afterDir="false" />
+    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="broadcast voice recorder">
+      <change afterPath="$PROJECT_DIR$/android/app/src/main/res/drawable/ic_launcher.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/images/appLogoIcon.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher_background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-hdpi/ic_launcher_monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher_background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-mdpi/ic_launcher_monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher_background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xhdpi/ic_launcher_monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_background.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_monochrome.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/kotlin/com/example/ut_messenger/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/kotlin/com/example/ut_messenger/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/images/chat_background.png" beforeDir="false" afterPath="$PROJECT_DIR$/assets/images/chat_background.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/auth/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/auth/signup_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/auth/signup_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/add_group.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/add_group.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/group_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_detail.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/group_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drawer_page/update_profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drawer_page/update_profile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/api.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/home_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/home/search_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/search_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/message_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/message_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/chatlist_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/chatlist_model.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/notification/notification_controller.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/notification/notification_controller.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linux/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/linux/CMakeLists.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,6 +73,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="ProjectErrors" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -106,11 +96,11 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;abhijeet&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/businessmoj/businessmoj/lib/chat&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/businessmoj/businessmoj/android/app/src/main/res/drawable&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
@@ -120,13 +110,14 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\businessmoj\businessmoj\android\app\src\main\res\drawable" />
       <recent name="D:\businessmoj\businessmoj\lib\chat" />
       <recent name="D:\businessmoj\businessmoj\assets\images" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\android\app\src\main\res" />
-      <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\lib" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\businessmoj\businessmoj\android\app\src\main\res\drawable" />
       <recent name="D:\businessmoj\businessmoj\assets\images" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\lib\drawer_page" />
@@ -203,7 +194,15 @@
       <option name="project" value="LOCAL" />
       <updated>1734586588031</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="broadcast voice recorder">
+      <option name="closed" value="true" />
+      <created>1734704253607</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1734704253607</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -225,6 +224,7 @@
     <MESSAGE value="all bugs done with client demo" />
     <MESSAGE value="client changes in notificationScreen" />
     <MESSAGE value="room id and unread count implemented." />
-    <option name="LAST_COMMIT_MESSAGE" value="room id and unread count implemented." />
+    <MESSAGE value="broadcast voice recorder" />
+    <option name="LAST_COMMIT_MESSAGE" value="broadcast voice recorder" />
   </component>
 </project>

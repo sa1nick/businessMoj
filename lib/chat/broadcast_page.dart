@@ -50,6 +50,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
 
   FlutterSoundRecorder _soundRecorder = FlutterSoundRecorder();
   FlutterSoundPlayer _soundPlayer = FlutterSoundPlayer();
+  List <FlutterSoundPlayer> soundPlayerList = [];
   String _audioPath = '';
   bool _isRecording = false;
   Timer? _timer;
@@ -75,7 +76,8 @@ class _BroadcastPageState extends State<BroadcastPage> {
           "receiver_user": widget.friendId,
           "fileName": anyfile?.path.split('/').last,
           "fileData": base64Image,
-          'room_id': widget.chatListData?.id.toString()
+          'room_id': widget.chatListData?.id.toString(),
+          'chat_type': 'broadcast',
         }));
       }
     }
@@ -98,8 +100,12 @@ class _BroadcastPageState extends State<BroadcastPage> {
         "receiver_user": widget.friendId,
         "fileName": imagefile?.path.split('/').last,
         "fileData": base64Image,
-        'room_id': widget.chatListData?.id.toString()
+        'room_id': widget.chatListData?.id.toString(),
+        'chat_type': 'broadcast',
       }));
+
+
+
     }
   }
 
@@ -112,9 +118,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   String? currentuser;
   UserData ? userData ;
 
-  WebSocketChannel channel = WebSocketChannel.connect(
-    Uri.parse('wss://chat-application.alphawizzserver.com:8082'),
-  );
+  WebSocketChannel channel = WebSocketChannel.connect( Uri.parse('wss://chat-application.alphawizzserver.com:8082'),);
 
   @override
   void initState() {
@@ -193,7 +197,10 @@ class _BroadcastPageState extends State<BroadcastPage> {
         reconnectWebSocket();
       },
     );
+
+
   }
+
   Future<void> _initializeRecorder() async {
     await _soundRecorder.openRecorder();
     await _soundPlayer.openPlayer();
@@ -207,6 +214,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
       print('Microphone permission denied');
     }
   }
+
   Future<void> _startRecording() async {
 
 

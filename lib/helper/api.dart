@@ -32,6 +32,8 @@ class AppUrl {
   static const myChatList = '${baseURL}customer/my-chat-group';
   static const removeChatUser = '${baseURL}customer/remove-chat-group-users';
   static const addChatUser = '${baseURL}customer/update-chat-group-users';
+  static const forwardMessage = '${baseURL}customer/forward-message';
+  static const deleteGroup = '${baseURL}customer/remove-chat-group';
 
 
 
