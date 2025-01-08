@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-String razorPayKey = 'rzp_test_LCkZbZ1I6bhewi';
+String razorPayKey = 'rzp_live_2LwNQNkugVL1gT';//'rzp_test_LCkZbZ1I6bhewi';
 
 class RazorPayHelper {
   String amount;
@@ -33,7 +33,7 @@ class RazorPayHelper {
       "currency": "INR",
       'name': 'Business Moj',
       //"order_id": 123,
-      'description': "Business Moj #" + getRandomString(5),
+      'description': "Business Moj #${getRandomString(5)}",
       'external': {
         'wallets': ['paytm']
       },
@@ -43,7 +43,7 @@ class RazorPayHelper {
         'email': 'tanmay@gmail.com',
       },
       "image":
-      "https://chat-application.alphawizzserver.com/storage/app/public/company/2024-11-28-6747fc6fd7ce9.png",
+      "https://businessmoj.com/storage/app/public/company/2024-11-28-6747fc6fd7ce9.png",
       "notify": {"sms": true, "email": true},
       "reminder_enable": true,
     };

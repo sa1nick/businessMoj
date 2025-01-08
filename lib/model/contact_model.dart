@@ -5,6 +5,7 @@ class MyContactModel {
   String? phone;
   String? roomId;
   bool? isSelected;
+  bool? isBlocked;
 
   MyContactModel({this.id, this.name, this.image, this.phone});
 
@@ -14,6 +15,7 @@ class MyContactModel {
     image = json['image'];
     phone = json['phone'];
     roomId = json['room_id'];
+    isBlocked = json['is_blocked'];
     isSelected= false;
   }
 

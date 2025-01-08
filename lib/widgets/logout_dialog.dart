@@ -52,3 +52,43 @@ class LogoutDialog extends StatelessWidget {
     );
   }
 }
+
+
+
+class DeleteAccountDialog extends StatelessWidget {
+   DeleteAccountDialog({super.key,required this.heading,required this.title,required this.onTab});
+
+
+  String heading ;
+  String title ;
+  VoidCallback onTab ;
+
+  @override
+  Widget build(BuildContext context) {
+    return  AlertDialog(
+      title:   Text(heading,style: const TextStyle(fontSize: 20),
+      ),
+      content:  Text(title,style: const TextStyle(fontSize: 12),
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: MyColor.primary),
+          onPressed: onTab,
+          child: const Text("Yes",
+              style: TextStyle(color: Colors.white)),
+        ),
+        ElevatedButton(
+            style: ButtonStyle(
+              backgroundColor:
+              MaterialStateProperty.all(MyColor.primary),
+            ),
+            onPressed: () async {
+              Navigator.pop(context);
+            },
+            child: const Text("No",
+                style: TextStyle(color: Colors.white))),
+      ],
+    );
+  }
+}
+

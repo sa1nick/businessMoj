@@ -47,6 +47,7 @@ class ChatListData {
   String? unreadCount;
   String? lastUnreadDate;
   bool? isSelected ;
+  bool? isBlocked ;
   List<Chatroom>? chatroom;
 
   ChatListData(
@@ -65,7 +66,7 @@ class ChatListData {
         this.updatedBy,
         this.imageUrl,
         this.lastUnreadDate,
-        this.chatroom,this.unreadCount,this.isSelected});
+        this.chatroom,this.unreadCount,this.isSelected,this.isBlocked});
 
   ChatListData.fromJson(Map<String, dynamic> json) {
 
@@ -85,6 +86,7 @@ class ChatListData {
     updatedAt = json['updated_at'];
     updatedBy = json['updated_by'];
     imageUrl = json['image_url'];
+    isBlocked = json['is_blocked'];
     isSelected = false ;
     if (json['chatroom'] != null) {
       chatroom = <Chatroom>[];

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ut_messenger/home/bottom_navbar.dart';
+import 'auth/accept_privacy_screen.dart';
 import 'auth/login_screen.dart';
 import 'helper/colors.dart';
 
@@ -30,8 +31,11 @@ class _SplashScreenState extends State<SplashScreen> {
       } else {
         // User is not logged in, navigate to the Login Page
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const LoginPage()),
+          MaterialPageRoute(builder: (_) => const AcceptPrivacyScreen()),
         );
+        /*Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const LoginPage()),
+        );*/
       }
     }
     );

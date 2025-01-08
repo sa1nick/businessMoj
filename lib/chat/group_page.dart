@@ -20,10 +20,13 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ut_messenger/helper/api.dart';
 import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
+import 'package:ut_messenger/home/bottom_navbar.dart';
 import 'package:ut_messenger/home/home_screen.dart';
 import 'package:ut_messenger/model/message_model.dart';
 import 'package:ut_messenger/model/usermodel.dart';
 import 'package:ut_messenger/notification/notification_controller.dart';
+import 'package:ut_messenger/widgets/Block%20_and_report_dialog.dart';
+import 'package:ut_messenger/widgets/logout_dialog.dart';
 import 'package:ut_messenger/widgets/networkimage.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -34,6 +37,7 @@ import 'package:http/http.dart' as http;
 class GroupPage extends StatefulWidget {
   final String name, image, friendId;
   String? myRoomId;
+  bool? isBlock;
 
   final ChatListData? chatListData;
 
@@ -43,6 +47,7 @@ class GroupPage extends StatefulWidget {
       required this.image,
       this.chatListData,
       this.myRoomId,
+        this.isBlock,
       required this.friendId});
 
   @override
@@ -121,13 +126,43 @@ class _GroupPageState extends State<GroupPage> {
   UserData? userData;
 
   WebSocketChannel channel = WebSocketChannel.connect(
-    Uri.parse('wss://chat-application.alphawizzserver.com:8082'),
+    Uri.parse('wss://businessmoj.com:8084'),
   );
+
+  List<Messages> messageList = [];
+
+  String roomId = '';
+
+  ///for message forward
+  List<Messages> selectedMessage = [];
+  bool isForward = false;
+  bool isForwardLoading = false;
+  bool isDelete = false;
+
+  List popupItemsList = [
+    {'icon': Icons.thumb_down, 'title': 'Report'},
+  ];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    if(widget.isBlock != null && widget.isBlock!){
+      popupItemsList.add({'icon': Icons.report_off, 'title': 'Unblock'});
+    }else if(widget.isBlock != null && widget.isBlock == false) {
+      popupItemsList.add({'icon': Icons.block, 'title': 'Block'});
+    }
+    else if(widget.chatListData?.isBlocked == true && widget.chatListData?.type == 1) {
+          popupItemsList.add({'icon': Icons.report_off, 'title': 'Unblock'});
+
+     } else if(widget.chatListData?.isBlocked == false && widget.chatListData?.type == 1 ){
+      popupItemsList.add({'icon': Icons.block, 'title': 'Block'});
+
+    } else {
+    }
+
+
     notificationHandle();
     inIt();
     _initializeRecorder();
@@ -201,7 +236,8 @@ class _GroupPageState extends State<GroupPage> {
         print('Data__${data}');
 
 
-        if (data['type'] == 'history') {
+        if (data['type'] == 'history' &&
+            (data['room_id'].toString() == widget.chatListData?.id.toString() || data['room_id'].toString() == widget.myRoomId)) {
           messageList = SmSHistoryModel.fromJson(data).messages ?? [];
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -213,6 +249,7 @@ class _GroupPageState extends State<GroupPage> {
         } else if (data['type'] == 'chat' &&
             (data['room_id'].toString() == widget.chatListData?.id.toString() || data['room_id'].toString() == widget.myRoomId)) {
           print('${widget.chatListData?.id.toString()}__________roroom');
+
 
           messageList.add( SmSHistoryModel.fromJson(data).messages!.first);
 
@@ -397,19 +434,15 @@ class _GroupPageState extends State<GroupPage> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('wss://chat-application.alphawizzserver.com:8082'),
+      Uri.parse('wss://businessmoj.com:8084'),
     );
   }
 
-  List<Messages> messageList = [];
+  int returnIndex(){
+    int index =  widget.chatListData!.chatroom!.indexWhere((element) => element.user?.id.toString() != currentuser) ;
+    return index != -1 ? index : 1;
+  }
 
-  String roomId = '';
-
-  ///for message forward
-  List<Messages> selectedMessage = [];
-  bool isForward = false;
-  bool isForwardLoading = false;
-  bool isDelete = false;
 
   @override
   Widget build(BuildContext context) {
@@ -467,15 +500,15 @@ class _GroupPageState extends State<GroupPage> {
                               fontWeight: FontWeight.bold,
                               fontSize: 13),
                         )
-                      : SizedBox()
+                      : const SizedBox()
                 ],
               )
             ],
           ),
         ),
         actions: widget.friendId == '1'
-            ? []
-            : [ selectedMessage.isNotEmpty
+                      ? []
+                     : [ selectedMessage.isNotEmpty
                     ? Row(
                         children: [
                           isDelete
@@ -568,7 +601,95 @@ class _GroupPageState extends State<GroupPage> {
               child: const Icon(Icons.video_call_outlined)),*/
                         ],
                       )
-                    : const SizedBox()
+                    : PopupMenuButton(
+          color: MyColor.primary,
+          // style: ButtonStyle(backgroundColor: WidgetStateProperty.all(MyColor.primary) ,),
+          itemBuilder: (context) {
+            return [
+              for (int i = 0; i < popupItemsList.length; i++)
+                PopupMenuItem(
+                    value: popupItemsList[i]['title'],
+                    child: ListTile(
+                      onTap: () {
+
+                        if (popupItemsList[i]['title'] == 'Report') {
+                          showDialog(
+                              context: context,
+                              // barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return widget.chatListData != null && widget.chatListData!.type != 1
+                                    ?  BlockReportDialog(onTabYes: (){
+
+                                      reportUserOrRoom(roomId: widget.chatListData?.id.toString() ?? '',friendId: '');
+                                },)
+                                    : BlockReportDialog(title: widget.name,onTabYes: (){
+                                      if(widget.chatListData != null){
+
+                                      int index =  returnIndex();
+
+                                      reportUserOrRoom(friendId: widget.chatListData?.chatroom![index].user!.id.toString() ?? '',roomId: '' );
+
+                                      } else {
+                                        reportUserOrRoom(friendId: widget.friendId,roomId: '');
+                                      }
+
+                                },);
+                              });
+
+                        }
+
+                        else if (popupItemsList[i]['title'] == 'Block') {
+
+
+                          showDialog(
+                              context: context,
+                              // barrierDismissible: false,
+                              builder: (BuildContext context) {
+                                return  BlockReportDialog(title: widget.name,forBlock: true,onTabYes: (){
+
+
+
+                                  if(widget.isBlock == null){
+
+                                    int index =  returnIndex();
+
+
+                                    userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
+
+                                  } else {
+                                    userBlock(widget.friendId);
+                                  }
+                                });
+                              });
+
+                        } else {
+
+                          if(widget.isBlock == null){
+
+                            int index =  returnIndex();
+
+                            userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
+
+                          } else {
+                            userBlock(widget.friendId);
+                          }
+
+                        }
+                      },
+                      leading: Icon(
+                        popupItemsList[i]['icon'],
+                        color: MyColor.white,
+                      ),
+                      title: Text(
+                        popupItemsList[i]['title'],
+                        style: const TextStyle(
+                            color: MyColor.white,
+                            fontWeight: FontWeight.w700),
+                      ),
+                    ))
+            ];
+          },
+        )
               ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -610,7 +731,7 @@ class _GroupPageState extends State<GroupPage> {
               width: MediaQuery.of(context).size.width,
               child: Image.asset(
                 "assets/images/chat_background.png",
-                fit: BoxFit.cover,
+                fit: BoxFit.cover,opacity: AlwaysStoppedAnimation(0.2),
               ),
             ),
             Column(
@@ -821,10 +942,14 @@ class _GroupPageState extends State<GroupPage> {
                       InkWell(
                         onTap: () {
                           if (messageController.text.isEmpty) {
-                            Fluttertoast.showToast(
-                                msg: "message field can't be empty");
+                            Fluttertoast.showToast( msg: "message field can't be empty");
+                          } else if((widget.isBlock !=null && widget.isBlock!) || (widget.chatListData !=null && widget.chatListData!.isBlocked!))
+                          {
+                            Fluttertoast.showToast( msg: "You've blocked this user. Please unblock them to send a message.");
+
                           } else {
-                            channel.sink.add(jsonEncode({
+                            channel.sink.add(
+                                jsonEncode({
                               'type': 'typing',
                               "sender": currentuser,
                               "receiver_user": widget.friendId,
@@ -1031,9 +1156,6 @@ class _GroupPageState extends State<GroupPage> {
 
     String? token = pref?.getString('token');
 
-    // isNetwork1 = await isNetworkAvailable();
-
-    // if (isNetwork1) {
     setState(() {
       isForwardLoading = true;
     });
@@ -1059,6 +1181,64 @@ class _GroupPageState extends State<GroupPage> {
       setState(() {
         isForwardLoading = false;
       });
+    } catch (e) {
+      // Handle network or parsing error
+      Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
+  }
+
+
+  Future<void> userBlock(String friendId) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String? token = pref?.getString('token');
+    try {
+      var headers = {'Authorization': 'Bearer $token'};
+      var body =    {'friend_id': friendId};
+      http.Response response = await http.post(Uri.parse(AppUrl.blockUserApi),
+          headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+
+        Fluttertoast.showToast(msg: data['message']);
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBarMain(),));
+
+
+      } else {
+        // Handle error response
+        Fluttertoast.showToast(msg: "Failed to block");
+      }
+
+    } catch (e) {
+      // Handle network or parsing error
+      Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
+  }
+
+  Future<void> reportUserOrRoom({required String roomId, required String friendId}) async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    String? token = pref?.getString('token');
+
+    setState(() {
+      isForwardLoading = true;
+    });
+    try {
+      var headers = {'Authorization': 'Bearer $token'};
+      var body =    {'friend_id': friendId, 'room_id': roomId};
+      http.Response response = await http.post(Uri.parse(AppUrl.reportApi),
+          headers: headers, body: body);
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+
+        Fluttertoast.showToast(msg: data['message']);
+      } else {
+        // Handle error response
+        Fluttertoast.showToast(msg: "Failed to block");
+      }
+
     } catch (e) {
       // Handle network or parsing error
       Fluttertoast.showToast(msg: "An error occurred: $e");

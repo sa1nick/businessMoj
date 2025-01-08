@@ -1,8 +1,11 @@
 
 class AppUrl {
-  static const baseURL ='https://chat-application.alphawizzserver.com/api/v1/';
-  static const fileURL ='https://chat-application.alphawizzserver.com/storage/app/chat/';
-  static const profileURL ='https://chat-application.alphawizzserver.com/storage/app/public/profile/';
+ // static const baseURL ='https://chat-application.alphawizzserver.com/api/v1/';
+  static const baseURL ='https://businessmoj.com/api/v1/';
+ // static const fileURL ='https://chat-application.alphawizzserver.com/storage/app/chat/';
+  static const fileURL ='https://businessmoj.com/storage/app/chat/';
+  //static const profileURL ='https://chat-application.alphawizzserver.com/storage/app/public/profile/';
+  static const profileURL ='https://businessmoj.com/storage/app/public/profile/';
   String userID = '';
 
 
@@ -34,6 +37,9 @@ class AppUrl {
   static const addChatUser = '${baseURL}customer/update-chat-group-users';
   static const forwardMessage = '${baseURL}customer/forward-message';
   static const deleteGroup = '${baseURL}customer/remove-chat-group';
+  static const blockUserApi = '${baseURL}customer/block-user';
+  static const reportApi = '${baseURL}customer/report-user';
+  static const deleteAccountApi = '${baseURL}customer/account-delete';
 
 
 

@@ -108,7 +108,12 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
               },
             )
-          : const SizedBox(),
+          : /*const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Powered by @ NAVGURU WELLNESS PVT LTD',textAlign: TextAlign.center,style: TextStyle(color: MyColor.primary),)
+        ],)*/const SizedBox(),
+      //floatingActionButtonLocation: isSelectable ? null :FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
         centerTitle: !((widget.fromGroup ?? false)|| (widget.fromBroadcast ?? false)),
         automaticallyImplyLeading: (widget.fromGroup ?? false)|| (widget.fromBroadcast ?? false),
@@ -290,6 +295,8 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                                             image: friend.image.toString(),
                                                             friendId: friend.id.toString(),
                                                             myRoomId: friend.roomId,
+                                                              isBlock: friend.isBlocked,
+
                                                           ))).then((value) {
 
                                                 contactPermission();

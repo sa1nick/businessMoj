@@ -89,10 +89,10 @@ class _OtpScreenState extends State<OtpScreen> {
                       "Please Enter Otp Send to +91-${widget.phoneNo}",
                       style: const TextStyle(fontSize: 16, color: MyColor.black),
                     ),
-                    Text(
-                      "otp: ${widget.otp}",
-                      style: const TextStyle(fontSize: 16, color: MyColor.black),
-                    ),
+                    // Text(
+                    //   "otp: ${widget.otp}",
+                    //   style: const TextStyle(fontSize: 16, color: MyColor.black),
+                    // ),
 
                     const SizedBox(height: 8),
                     Padding(
@@ -174,6 +174,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
 
   bool isLoading = false;
+
   verifyOtp() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? myfcmtoken = prefs.getString('fcmtoken');

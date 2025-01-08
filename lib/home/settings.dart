@@ -12,8 +12,10 @@ import 'package:ut_messenger/drawer_page/privacypolicy.dart';
 import 'package:ut_messenger/drawer_page/termsandconditions.dart';
 import 'package:ut_messenger/drawer_page/update_profile.dart';
 import 'package:ut_messenger/helper/api.dart';
+import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
 import 'package:http/http.dart'as http;
+import 'package:ut_messenger/model/usermodel.dart';
 import 'package:ut_messenger/subscription/subscription_screen.dart';
 import 'package:ut_messenger/widgets/logout_dialog.dart';
 import '../helper/session.dart';
@@ -61,6 +63,12 @@ String? firstname,lastname,phoneNo;
         centerTitle: true,
         title: const Text("Settings"),
       ),
+      /*floatingActionButton: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Powered by @ NAVGURU WELLNESS PVT LTD',textAlign: TextAlign.center,style: TextStyle(color: MyColor.primary),)
+        ],),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
 
       body: RefreshIndicator(
         color: MyColor.primary,
@@ -152,6 +160,20 @@ String? firstname,lastname,phoneNo;
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>const AboutUs()));
                         },
                         child: buildOptionTile("assets/images/aboutus.png", "About Us")),
+                    GestureDetector(
+                        onTap: (){
+                          showDialog(
+                              context: context,
+                              builder: (context) => DeleteAccountDialog(
+                                heading: 'Delete Account',
+                                title: 'Do you really want to delete your account ?',
+                                onTab: () async{
+
+                                  deleteAccount ();
+
+                              },));
+                        },
+                        child: buildOptionTile("assets/images/delete_account.png", "Delete Account")),
                     /*GestureDetector(
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>const ChatPage(name: 'Admin', image: "assets/images/logo.png",friendId: '1',)));
@@ -270,6 +292,46 @@ String? firstname,lastname,phoneNo;
     //   // Handle no internet
     //   Fluttertoast.showToast(msg: "No internet connection");
     // }
+  }
+
+
+  Future<void> deleteAccount() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+
+    var userString = pref.getString(AppConstants.userdata);
+
+    UserData  userData = UserData.fromJson(jsonDecode(userString!));
+
+
+    String? token = pref?.getString('token');
+
+    try {
+      var headers = {'Authorization': 'Bearer $token'};
+      http.Response response = await http.get(Uri.parse('${AppUrl.deleteAccountApi}/${userData.id.toString()}'),
+          headers: headers, );
+
+      print(response.body);
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+
+        Fluttertoast.showToast(msg: data['message']);
+        await pref.setBool('isLoggedIn', false);
+        await pref.setString('fname', "");
+        await pref.setString('lname', "");
+        await pref.setString('mobile', "");
+
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const LoginPage()), (Route<dynamic> route) => false,);
+
+      } else {
+        // Handle error response
+        Fluttertoast.showToast(msg: "Failed to load plans");
+      }
+
+    } catch (e) {
+      // Handle network or parsing error
+      Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
   }
 
 

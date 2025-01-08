@@ -172,6 +172,12 @@ class _HomeScreenState extends State<HomeScreen> {
           // }, icon: const Icon(Icons.notification_add),),
         ],
       ),
+      /*floatingActionButton: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text('Powered by @ NAVGURU WELLNESS PVT LTD',textAlign: TextAlign.center,style: TextStyle(color: MyColor.primary),)
+        ],),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
       bottomNavigationBar: selectedChat.isNotEmpty
           ? Padding(
         padding: const EdgeInsets.only(bottom: 10, ),
@@ -346,7 +352,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     .toString(),
                                                                 chatListData:
                                                                     users,
-                                                              )));
+                                                              ))).then((value) {
+                                                                if(value!=null) {
+                                                                  getChatList();
+                                                                }
+                                                              },);
                                                 }
                                               },
                                         onLongPress: widget.fromChat == null ? (){
@@ -435,7 +445,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        Text(chatOrGroupname(users),
+                                                        Text(users.title ?? 'Unknown',//chatOrGroupname(users)
                                                           style: const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
