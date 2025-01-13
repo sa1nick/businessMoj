@@ -20,13 +20,20 @@ import 'package:ut_messenger/widgets/networkimage.dart';
 
 import '../helper/api.dart';
 import '../helper/session.dart';
+import '../model/chatlist_model.dart';
 
 class FriendListScreen extends StatefulWidget {
-  const FriendListScreen({super.key, this.fromGroup, this.fromGroupDetail,this.fromBroadcast});
+  const FriendListScreen(
+      {super.key,
+      this.fromGroup,
+      this.fromGroupDetail,
+      this.fromBroadcast,
+      this.chatroom});
 
   final bool? fromGroup;
   final bool? fromGroupDetail;
   final bool? fromBroadcast;
+  final List<Chatroom>? chatroom;
 
   @override
   State<FriendListScreen> createState() => _FriendListScreenState();
@@ -44,15 +51,18 @@ class _FriendListScreenState extends State<FriendListScreen> {
   List<MyContactModel> mygropuList = [];
   SharedPreferences? prefs;
 
-///for many bool variable handle in one variable
-  bool isSelectable = false ;
+  ///for many bool variable handle in one variable
+  bool isSelectable = false;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
     ///for many bool variable handle in one variable
-    isSelectable = (widget.fromGroup ?? false) || (widget.fromGroupDetail ?? false) || (widget.fromBroadcast ?? false) ;
+    isSelectable = (widget.fromGroup ?? false) ||
+        (widget.fromGroupDetail ?? false) ||
+        (widget.fromBroadcast ?? false);
     info();
   }
 
@@ -63,11 +73,14 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
     String? contact = prefs?.getString(AppConstants.myContact);
 
-
     if (contact != null && contact != '[]') {
       var data = jsonDecode(contact);
-      myContactsList = (data as List).map((e) => MyContactModel.fromJson(e),).toList();
-      tempList = myContactsList ;
+      myContactsList = (data as List)
+          .map(
+            (e) => MyContactModel.fromJson(e),
+          )
+          .toList();
+      tempList = myContactsList;
       setState(() {});
     } else {
       contactPermission();
@@ -96,33 +109,48 @@ class _FriendListScreenState extends State<FriendListScreen> {
                 color: MyColor.white,
               ),
               onPressed: () {
-                if(widget.fromGroup ?? false){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  AddGroupScreen(groupMembers: mygropuList,),));
-
-                }else if (widget.fromBroadcast ?? false){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) =>  AddGroupScreen(groupMembers: mygropuList,fromBroadCast: true,),));
-
-                }else {
+                if (widget.fromGroup ?? false) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddGroupScreen(
+                          groupMembers: mygropuList,
+                        ),
+                      ));
+                } else if (widget.fromBroadcast ?? false) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddGroupScreen(
+                          groupMembers: mygropuList,
+                          fromBroadCast: true,
+                        ),
+                      ));
+                } else {
                   Navigator.pop(context, mygropuList);
                 }
-
               },
             )
           : /*const Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text('Powered by @ NAVGURU WELLNESS PVT LTD',textAlign: TextAlign.center,style: TextStyle(color: MyColor.primary),)
-        ],)*/const SizedBox(),
+        ],)*/
+          const SizedBox(),
       //floatingActionButtonLocation: isSelectable ? null :FloatingActionButtonLocation.centerDocked,
       appBar: AppBar(
-        centerTitle: !((widget.fromGroup ?? false)|| (widget.fromBroadcast ?? false)),
-        automaticallyImplyLeading: (widget.fromGroup ?? false)|| (widget.fromBroadcast ?? false),
-        title: (widget.fromGroup ?? false)|| (widget.fromBroadcast ?? false)
-            ?  Column(
+        centerTitle:
+            !((widget.fromGroup ?? false) || (widget.fromBroadcast ?? false)),
+        automaticallyImplyLeading:
+            (widget.fromGroup ?? false) || (widget.fromBroadcast ?? false),
+        title: (widget.fromGroup ?? false) || (widget.fromBroadcast ?? false)
+            ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.fromBroadcast == true ? "New Broadcast": "New Group",
+                    widget.fromBroadcast == true
+                        ? "New Broadcast"
+                        : "New Group",
                     style: const TextStyle(fontSize: 16),
                   ),
                   const Text(
@@ -144,14 +172,13 @@ class _FriendListScreenState extends State<FriendListScreen> {
             const SizedBox(
               height: 10,
             ),
-
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: TextFormField(
                 controller: searchController,
                 readOnly: false,
-                onChanged: (value){
-                  searchMock (value);
+                onChanged: (value) {
+                  searchMock(value);
                 },
                 decoration: InputDecoration(
                   isDense: true,
@@ -174,171 +201,234 @@ class _FriendListScreenState extends State<FriendListScreen> {
             ),
             loading
                 ? const Expanded(
-                  child: Center(
-                                child: CircularProgressIndicator(
-                  color: MyColor.primary,
-                                ),
-                              ),
-                )
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        color: MyColor.primary,
+                      ),
+                    ),
+                  )
                 : myContactsList.isEmpty
                     ? const Expanded(child: Center(child: Text("No Friends")))
                     : Expanded(
                         child: ListView.builder(
                             itemCount: myContactsList.length,
                             itemBuilder: (context, index) {
+
                               var friend = myContactsList[index];
 
                               return vId == myContactsList[index].id
                                   ? const SizedBox()
-                                  : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0, vertical: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: MyColor.white,
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                          color: Colors.black12,
-                                          blurRadius: 2,
-                                          spreadRadius: 3),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: InkWell(
-                                            onTap: isSelectable
-                                                ? () {
-                                                    friend.isSelected = !(friend.isSelected ?? false);
+                                  : InkWell(
+                                      onTap: isSelectable
+                                          ? () {
 
-                                                    if(friend.isSelected ?? false){
-                                                      mygropuList.add(friend);
-                                                    }else {
-                                                      mygropuList.remove(friend);
-;                                                    }
+                                        if(widget.chatroom?.any((element) => element.userId == myContactsList[index].id) ?? false)
+                                          {
+                                         Fluttertoast.showToast(msg: 'User already added in this group');
+                                          }
+                                         else{
+                                          friend.isSelected =
+                                          !(friend.isSelected ?? false);
 
-                                                    setState(() {});
-                                                    print('_____________');
+                                          if (friend.isSelected ?? false) {
+                                            mygropuList.add(friend);
+                                          } else {
+                                            mygropuList.remove(friend);
 
+                                          }
+
+                                          setState(() {});
+                                          print('_____________');
+                                        }
                                             }
-                                                : () {
-                                            },
-                                            child: Stack(
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 30,
-                                                  child: ClipOval(
-                                                    child: AppImage(
-                                                      image: friend.image ?? '',
+                                          : () {},
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 5),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: MyColor.white,
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                  color: Colors.black12,
+                                                  blurRadius: 2,
+                                                  spreadRadius: 3),
+                                            ],
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      10.0),
+                                                  child: InkWell(
+                                                    onTap: isSelectable
+                                                        ? () {
+                                                            friend.isSelected =
+                                                                !(friend.isSelected ??
+                                                                    false);
+
+                                                            if (friend
+                                                                    .isSelected ??
+                                                                false) {
+                                                              mygropuList
+                                                                  .add(friend);
+                                                            } else {
+                                                              mygropuList
+                                                                  .remove(
+                                                                      friend);
+                                                              ;
+                                                            }
+
+                                                            setState(() {});
+                                                            print(
+                                                                '_____________');
+                                                          }
+                                                        : () {},
+                                                    child: Stack(
+                                                      children: [
+                                                        CircleAvatar(
+                                                          radius: 30,
+                                                          child: ClipOval(
+                                                            child: AppImage(
+                                                              image: friend
+                                                                      .image ??
+                                                                  '',
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        isSelectable &&
+                                                                (friend.isSelected ??
+                                                                    false)
+                                                            ? Positioned(
+                                                                bottom: 0,
+                                                                right: 0,
+                                                                child:
+                                                                    Container(
+                                                                  height: 20,
+                                                                  width: 20,
+                                                                  decoration:
+                                                                      const BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .circle,
+                                                                    color: MyColor
+                                                                        .green,
+                                                                  ),
+                                                                  child:
+                                                                      const Icon(
+                                                                    Icons.check,
+                                                                    color: MyColor
+                                                                        .black,
+                                                                    size: 20,
+                                                                  ),
+                                                                ))
+                                                            : const SizedBox()
+                                                      ],
                                                     ),
-                                                  ),
+                                                  )),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      friend.name == ''
+                                                          ? 'Unknown'
+                                                          : friend.name ??
+                                                              'Unknown',
+                                                      style: const TextStyle(
+                                                          fontSize: 15,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      friend.phone ?? '',
+                                                      style: const TextStyle(
+                                                        fontSize: 15,
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                isSelectable  &&
-                                                        (friend.isSelected ?? false)
-                                                    ? Positioned(
-                                                        bottom: 0,
-                                                        right: 0,
-                                                        child: Container(
-                                                          height: 20,
-                                                          width: 20,
-                                                          decoration:
-                                                              const BoxDecoration(
-                                                            shape:
-                                                                BoxShape.circle,
-                                                            color:
-                                                                MyColor.green,
-                                                          ),
-                                                          child: const Icon(
-                                                            Icons.check,
-                                                            color:
-                                                                MyColor.black,
-                                                            size: 20,
-                                                          ),
-                                                        ))
-                                                    : const SizedBox()
-                                              ],
-                                            ),
-                                          )),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              friend.name == '' ? 'Unknown'  : friend.name ?? 'Unknown',
-                                              style: const TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            Text(
-                                              friend.phone ?? '',
-                                              style: const TextStyle(
-                                                fontSize: 15,
                                               ),
-                                            ),
-                                          ],
+                                              isSelectable
+                                                  ? const SizedBox()
+                                                  : Row(
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            if (friend
+                                                                    .imblocked ??
+                                                                false) {
+                                                              Fluttertoast
+                                                                  .showToast(
+                                                                      msg:
+                                                                          '${friend.name} has blocked you.');
+                                                            } else {
+                                                              Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          GroupPage(
+                                                                            name:
+                                                                                friend.name.toString(),
+                                                                            image:
+                                                                                friend.image.toString(),
+                                                                            friendId:
+                                                                                friend.id.toString(),
+                                                                            myRoomId:
+                                                                                friend.roomId,
+                                                                            isBlock:
+                                                                                friend.isBlocked,
+                                                                          ))).then(
+                                                                (value) {
+                                                                  contactPermission();
+                                                                },
+                                                              );
+                                                            }
+                                                          },
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(10.0),
+                                                            child: Container(
+                                                              decoration: BoxDecoration(
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              10),
+                                                                  color: MyColor
+                                                                      .primary),
+                                                              child:
+                                                                  const Padding(
+                                                                padding: EdgeInsets
+                                                                    .symmetric(
+                                                                        horizontal:
+                                                                            20.0,
+                                                                        vertical:
+                                                                            5),
+                                                                child: Text(
+                                                                  "Chat",
+                                                                  style: TextStyle(
+                                                                      color: MyColor
+                                                                          .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    )
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                      isSelectable ? const SizedBox() :  Row(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () {
-
-                                              if(friend.imblocked ?? false) {
-                                                Fluttertoast.showToast(msg: '${friend.name} has blocked you.');
-                                              }else {
-
-
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => GroupPage(
-                                                            name: friend.name.toString(),
-                                                            image: friend.image.toString(),
-                                                            friendId: friend.id.toString(),
-                                                            myRoomId: friend.roomId,
-                                                              isBlock: friend.isBlocked,
-
-                                                          ))).then((value) {
-
-                                                contactPermission();
-
-                                                          },); }
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                    color: MyColor.primary),
-                                                child: const Padding(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 20.0,
-                                                      vertical: 5),
-                                                  child: Text(
-                                                    "Chat",
-                                                    style: TextStyle(
-                                                        color: MyColor.white,
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              );
+                                    );
                             }),
                       )
           ],
@@ -369,9 +459,13 @@ class _FriendListScreenState extends State<FriendListScreen> {
         prefs?.setString(AppConstants.myContact, response.body);
 
         var data = jsonDecode(response.body);
-        myContactsList = (data as List).map((e) => MyContactModel.fromJson(e),).toList();
+        myContactsList = (data as List)
+            .map(
+              (e) => MyContactModel.fromJson(e),
+            )
+            .toList();
 
-        tempList = myContactsList ;
+        tempList = myContactsList;
       } else {
         // Handle error response
         Fluttertoast.showToast(msg: "Failed to load profile");
@@ -445,13 +539,11 @@ class _FriendListScreenState extends State<FriendListScreen> {
       String? description = element.phone?.toLowerCase();
       final input = value.toLowerCase();
 
-
-      return username!.contains(input)  ||  description!.contains(input)  ; /*||  firmName!.contains(input)*//* || mobile.contains(input) ||  firmName.contains(input)*/;
+      return username!.contains(input) || description!.contains(input);
+      /*||  firmName!.contains(input)*/ /* || mobile.contains(input) ||  firmName.contains(input)*/;
     }).toList();
     myContactsList = suggestions;
-    setState(() {
-
-    });
+    setState(() {});
 
     // update();
   }

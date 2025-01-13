@@ -9,13 +9,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
 import 'package:ut_messenger/home/friendlist_screen.dart';
+import 'package:ut_messenger/home/home_screen.dart';
 import 'package:ut_messenger/model/contact_model.dart';
 import 'package:ut_messenger/model/usermodel.dart';
 import 'package:ut_messenger/widgets/networkimage.dart';
 
 import '../helper/api.dart';
 import '../helper/global.dart';
+import '../home/bottom_navbar.dart';
 import '../model/chatlist_model.dart';
+import '../widgets/logout_dialog.dart';
 import 'add_group.dart';
 import 'package:http/http.dart' as http;
 
@@ -89,12 +92,42 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                         },
                       ),
                     ),
-                    Positioned(
+                    // Positioned(
+                    //   top: 40,
+                    //   right: 50,
+                    //   child: IconButton(
+                    //     icon: const Icon(Icons.person, color: Colors.white),
+                    //     onPressed: () {},
+                    //   ),
+                    // ),
+                    widget.fromBroadcast==true ?  SizedBox()  :     Positioned(
                       top: 40,
                       right: 16,
                       child: IconButton(
-                        icon: const Icon(Icons.person, color: Colors.white),
-                        onPressed: () {},
+                        icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                        onPressed: () {
+                          showDialog(
+                              context: context,
+                              builder: (context) => DeleteAccountDialog(
+                                heading: 'Exit Group',
+                                title: 'Do you really want to exit this group ?',
+                                onTab: () async{
+                                  SharedPreferences pref = await SharedPreferences.getInstance();
+
+                                  var userString = pref.getString(AppConstants.userdata);
+
+                                  String? token = pref?.getString('token');
+
+                                  userData = UserData.fromJson(jsonDecode(userString!));
+
+                                 String currentuser = userData?.id.toString() ?? '';
+                                  removeGroupMember(currentuser).then((value) {
+                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const BottomNavBarMain()));
+                                  },);
+                                  // deleteAccount ();
+
+                                },));
+                        },
                       ),
                     ),
                     Positioned(
@@ -184,7 +217,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                   title: const Text('Add participants'),
                   onTap: () {
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const FriendListScreen(fromGroupDetail: true,),)).then((value) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => FriendListScreen(fromGroupDetail: true,chatroom: widget.chatListData?.chatroom,),)).then((value) {
 
                       if(value !=null)
                         {

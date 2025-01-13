@@ -241,7 +241,7 @@ class _GroupPageState extends State<GroupPage> {
     //   'receiver_user': widget.friendId,
     //   'room_id': widget.chatListData?.id.toString(),
     // }));
-
+// print('llkkk');
     scrollController.addListener(() {});
     channel.stream.listen(
       (event) {
@@ -1020,7 +1020,8 @@ class _GroupPageState extends State<GroupPage> {
                                             ? null
                                             : widget.myRoomId
                                         : widget.chatListData?.id.toString(),
-                                    'sender_name': userData?.name
+                                    'sender_name':  widget.chatListData?.type == 2  ?   widget.name : userData?.name,
+                                    'group_name':  widget.chatListData?.type == 2  ?   widget.name :  ''
                                   }));
 
                                   channel.sink.add(jsonEncode({
@@ -1035,12 +1036,19 @@ class _GroupPageState extends State<GroupPage> {
                                             ? ''
                                             : widget.myRoomId
                                         : widget.chatListData?.id.toString(),
-                                    'sender_name': userData?.name
+                                    'sender_name': widget.chatListData?.type == 2  ?   widget.name :  userData?.name,
+                                    'group_name':  widget.chatListData?.type == 2  ?   widget.name :  ''
                                   }));
+
 
                                   //  messageList.add(Messages(createdAt: '${DateTime.now()}', createdBy: 2,id: 5464,message: messageController.text,type: 1));
 
                                   messageController.clear();
+
+                                  Future.delayed(Duration(milliseconds: 300), () {
+                                    callSocketHistory();
+                                  });
+
                                 }
                               },
                               child: const CircleAvatar(

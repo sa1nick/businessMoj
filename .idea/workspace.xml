@@ -13,22 +13,12 @@
       <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/chat/add_group.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/add_group.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/group_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_detail.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/group_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drawer_page/change_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drawer_page/change_password.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/home_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/home/search_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/search_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/home/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/settings.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/chatlist_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/chatlist_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/contact_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/contact_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/services/payment_service/razor_pay_payment.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/payment_service/razor_pay_payment.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/networkimage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/networkimage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/subscription_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/subscription_widget.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +52,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/alphawizzflutterteam/businessmoj.git&quot;,
-    &quot;accountId&quot;: &quot;886ec790-aabb-413b-9614-873672c52090&quot;
+    &quot;accountId&quot;: &quot;fa7a97f9-dfa8-4388-8ad1-baa420d10b9d&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -99,7 +89,7 @@
     &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editor.reader.mode&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;flutter.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
@@ -112,6 +102,7 @@
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/android" />
       <recent name="D:\businessmoj\businessmoj\assets\images" />
       <recent name="D:\businessmoj\businessmoj\android\app\src\main\res\drawable" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />

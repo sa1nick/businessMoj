@@ -54,7 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
   bool loading = true;
   List<ChatListData> myChatList = [];
 
-
   bool isLoading = false;
   bool isNetwork1 = false;
   bool status = false;
@@ -180,53 +179,57 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,*/
       bottomNavigationBar: selectedChat.isNotEmpty
           ? Padding(
-        padding: const EdgeInsets.only(bottom: 10, ),
-        child: Container(
-          height: 50,
-          padding: const EdgeInsets.only( left: 10, right: 10),
-          width: MediaQuery.of(context).size.width,
-          color: MyColor.primary.withOpacity(0.2),
-          child: Row(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: List.generate(
-                      selectedChat.length,
-                      (index) {
-                        return Text(
-                          '${selectedChat[index].title}, ',
-                          style: const TextStyle(
-                              color: MyColor.primary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700),
-                        );
-                      },
+              padding: const EdgeInsets.only(
+                bottom: 10,
+              ),
+              child: Container(
+                height: 50,
+                padding: const EdgeInsets.only(left: 10, right: 10),
+                width: MediaQuery.of(context).size.width,
+                color: MyColor.primary.withOpacity(0.2),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            selectedChat.length,
+                            (index) {
+                              return Text(
+                                '${selectedChat[index].title}, ',
+                                style: const TextStyle(
+                                    color: MyColor.primary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pop(context, selectedChat);
+                      },
+                      child: const CircleAvatar(
+                        backgroundColor: MyColor.primary,
+                        radius: 20,
+                        child: Icon(
+                          Icons.send,
+                          size: 19,
+                          color: Colors.white,
+                        ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-              const SizedBox(width: 5,),
-              InkWell(
-                onTap: (){
-                  Navigator.pop(context, selectedChat);
-                },
-                child: const CircleAvatar(
-                  backgroundColor: MyColor.primary,
-                  radius: 20,
-                  child: Icon(
-                    Icons.send,
-                    size: 19,
-                    color: Colors.white,
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      )
+            )
           : const SizedBox(),
       body: RefreshIndicator(
         color: MyColor.primary,
@@ -336,10 +339,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 chatListData:
                                                                     users,
                                                               )));
-                                                } else if(users.type == 1 && (users.imblocked?? false))
-                                                {
-                                                  Fluttertoast.showToast(msg: '${users.title} has blocked you.');
-                                                }else {
+                                                } else if (users.type == 1 &&
+                                                    (users.imblocked ??
+                                                        false)) {
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                          '${users.title} has blocked you.');
+                                                } else {
+                                                  print('title--->${users.title.toString()}');
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -355,32 +362,38 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     .id
                                                                     .toString(),
                                                                 chatListData:
-                                                                users,
-                                                              ))).then((value) {
-                                                    if(value!=null) {
-                                                      getChatList();
-                                                    }
-                                                  },);
+                                                                    users,
+                                                              ))).then(
+                                                    (value) {
+                                                      if (value != null) {
+                                                        getChatList();
+                                                      }
+                                                    },
+                                                  );
                                                 }
                                               },
-                                        onLongPress: widget.fromChat == null ? (){
-
-                                          if(users.type == 1 || users.createdBy == null) {
-
-                                                }else if(users.createdBy != null && users.createdBy == vId) {
-                                            showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                return confirmDialog(
-                                                    users.id.toString(),
-                                                    index);
-                                              },
-                                            );
-                                          }else {
-                                            Fluttertoast.showToast(msg: 'Only admin can delete the chat');
-
-                                          }
-                                              } : null,
+                                        onLongPress: widget.fromChat == null
+                                            ? () {
+                                                if (users.type == 1 ||
+                                                    users.createdBy == null) {
+                                                } else if (users.createdBy !=
+                                                        null &&
+                                                    users.createdBy == vId) {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) {
+                                                      return confirmDialog(
+                                                          users.id.toString(),
+                                                          index);
+                                                    },
+                                                  );
+                                                } else {
+                                                  Fluttertoast.showToast(
+                                                      msg:
+                                                          'Only admin can delete the chat');
+                                                }
+                                              }
+                                            : null,
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: MyColor.white,
@@ -429,8 +442,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 const BoxDecoration(
                                                               shape: BoxShape
                                                                   .circle,
-                                                              color:
-                                                                  MyColor.primary,
+                                                              color: MyColor
+                                                                  .primary,
                                                             ),
                                                             child: const Icon(
                                                               Icons.check,
@@ -449,7 +462,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   children: [
                                                     Row(
                                                       children: [
-                                                        Text(users.title ?? 'Unknown',//chatOrGroupname(users)
+                                                        Text(
+                                                          users.title ??
+                                                              'Unknown', //chatOrGroupname(users)
                                                           style: const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:
@@ -502,30 +517,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         TextOverflow
                                                                             .ellipsis)),
                                                           )
-                                                        : users.lastUnreadDate?.isNotEmpty ?? false
-                                                        ? Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                calculateTimeDifference(DateTime.parse(users.lastUnreadDate ??'')),
-                                                                style: const TextStyle(
-                                                                    fontSize:
-                                                                        15,
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .clip),
-                                                              ),
-                                                              // Container(
-                                                              //   padding: EdgeInsets.symmetric(horizontal: 5),
-                                                              //   decoration: BoxDecoration(
-                                                              //       border: Border.all(color: MyColor.unreadColor1,
-                                                              //       ),borderRadius: BorderRadius.circular(5)),
-                                                              //   child: const Text('2 pending...',style: TextStyle(fontSize: 12, color: MyColor.black),),
-                                                              // )
-                                                            ],
-                                                          ) :const SizedBox(),
+                                                        : users.lastUnreadDate
+                                                                    ?.isNotEmpty ??
+                                                                false
+                                                            ? Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Text(
+                                                                    calculateTimeDifference(DateTime.parse(
+                                                                        users.lastUnreadDate ??
+                                                                            '')),
+                                                                    style: const TextStyle(
+                                                                        fontSize:
+                                                                            15,
+                                                                        overflow:
+                                                                            TextOverflow.clip),
+                                                                  ),
+                                                                  // Container(
+                                                                  //   padding: EdgeInsets.symmetric(horizontal: 5),
+                                                                  //   decoration: BoxDecoration(
+                                                                  //       border: Border.all(color: MyColor.unreadColor1,
+                                                                  //       ),borderRadius: BorderRadius.circular(5)),
+                                                                  //   child: const Text('2 pending...',style: TextStyle(fontSize: 12, color: MyColor.black),),
+                                                                  // )
+                                                                ],
+                                                              )
+                                                            : const SizedBox(),
                                                   ],
                                                 ),
                                               ),
@@ -552,12 +571,11 @@ class _HomeScreenState extends State<HomeScreen> {
       }).toList();
 
       if (otherUser?.isNotEmpty ?? false) {
-        if(otherUser?.first.user?.fName == ''){
+        if (otherUser?.first.user?.fName == '') {
           return 'Unknown';
-        }else {
+        } else {
           return '${otherUser?.first.user?.fName} ${otherUser?.first.user?.lName.toString()}';
         }
-
       } else {
         return '';
       }
@@ -616,7 +634,7 @@ class _HomeScreenState extends State<HomeScreen> {
     int months = (days / 30).floor(); // Approximate month length
 
     if (minutes < 60) {
-      if(minutes == 0){
+      if (minutes == 0) {
         return 'now';
       }
       return '$minutes minute${minutes == 1 ? '' : 's'} ago';
@@ -652,18 +670,14 @@ class _HomeScreenState extends State<HomeScreen> {
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
         final parsedJson = jsonDecode(responseBody);
-       // List<ChatListData> temp = MyChatListModel.fromJson(parsedJson).data ?? [];
+        // List<ChatListData> temp = MyChatListModel.fromJson(parsedJson).data ?? [];
 
         myChatList = MyChatListModel.fromJson(parsedJson).data ?? [];
 
-
-        myChatList.sort((a, b) => DateTime.parse(b.lastUnreadDate ?? DateTime.now().toString()).compareTo(DateTime.parse(a.lastUnreadDate ?? DateTime.now().toString()))) ;
-
-
-
-
-
-
+        myChatList.sort((a, b) => DateTime.parse(
+                b.lastUnreadDate ?? DateTime.now().toString())
+            .compareTo(
+                DateTime.parse(a.lastUnreadDate ?? DateTime.now().toString())));
       } else {
         Fluttertoast.showToast(msg: "Failed to load chat");
       }
@@ -679,7 +693,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> deleteGroupOrBroadCast(String groupId, int index) async {
-
     String? token = prefs?.getString('token');
 
     isNetwork = await isNetworkAvailable();
@@ -702,7 +715,6 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {});
         Navigator.of(context).pop();
         getChatList();
-
       } else {
         Fluttertoast.showToast(msg: "Failed to delete chat");
       }
@@ -739,8 +751,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           onPressed: () {
-
-
             deleteGroupOrBroadCast(groupId, index);
             // Perform action and close dialog
           },
@@ -752,6 +762,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-
 }
