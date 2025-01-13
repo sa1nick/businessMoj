@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
 
-String razorPayKey = 'rzp_live_2LwNQNkugVL1gT';//'rzp_test_LCkZbZ1I6bhewi';
+String razorPayKey = 'rzp_live_2LwNQNkugVL1gT';//'rzp_test_LCkZbZ1I6bhewi'
 
 class RazorPayHelper {
   String amount;

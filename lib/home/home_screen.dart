@@ -226,7 +226,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ) : const SizedBox(),
+      )
+          : const SizedBox(),
       body: RefreshIndicator(
         color: MyColor.primary,
         onRefresh: refresh,
@@ -335,7 +336,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 chatListData:
                                                                     users,
                                                               )));
-                                                } else {
+                                                } else if(users.type == 1 && (users.imblocked?? false))
+                                                {
+                                                  Fluttertoast.showToast(msg: '${users.title} has blocked you.');
+                                                }else {
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -351,12 +355,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     .id
                                                                     .toString(),
                                                                 chatListData:
-                                                                    users,
+                                                                users,
                                                               ))).then((value) {
-                                                                if(value!=null) {
-                                                                  getChatList();
-                                                                }
-                                                              },);
+                                                    if(value!=null) {
+                                                      getChatList();
+                                                    }
+                                                  },);
                                                 }
                                               },
                                         onLongPress: widget.fromChat == null ? (){
@@ -498,7 +502,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         TextOverflow
                                                                             .ellipsis)),
                                                           )
-                                                        : users.lastUnreadDate?.isNotEmpty ?? false ? Row(
+                                                        : users.lastUnreadDate?.isNotEmpty ?? false
+                                                        ? Row(
                                                             mainAxisAlignment:
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
@@ -520,7 +525,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               //   child: const Text('2 pending...',style: TextStyle(fontSize: 12, color: MyColor.black),),
                                                               // )
                                                             ],
-                                                          ) :SizedBox(),
+                                                          ) :const SizedBox(),
                                                   ],
                                                 ),
                                               ),

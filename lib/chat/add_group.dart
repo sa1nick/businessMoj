@@ -10,10 +10,14 @@ import 'package:ut_messenger/helper/app_contants.dart';
 import 'package:ut_messenger/helper/colors.dart';
 import 'package:ut_messenger/home/bottom_navbar.dart';
 import 'package:ut_messenger/model/contact_model.dart';
+import 'package:ut_messenger/model/subscription_model.dart';
+import 'package:ut_messenger/services/payment_service/razor_pay_payment.dart';
 import 'package:ut_messenger/widgets/networkimage.dart';
 import 'package:http/http.dart'as http;
 
 import '../helper/global.dart';
+import '../model/user_model.dart';
+import '../widgets/subscription_widget.dart';
 
 class AddGroupScreen extends StatefulWidget {
   const AddGroupScreen({super.key,this.groupMembers, this.fromBroadCast});
@@ -170,16 +174,15 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
 
 
 
-
+  UserModel? user ;
   init() async{
    pref = await SharedPreferences.getInstance();
 
    token = pref?.getString(AppConstants.token);
+   getSubscriptionPlan();
 }
 
  Future<void> createGroup() async{
-
-   isLoading = true ;
    setState(() {
      isLoading = true ;
    });
@@ -212,17 +215,130 @@ class _AddGroupScreenState extends State<AddGroupScreen> {
      
      Fluttertoast.showToast(msg: '${finalResult['message']}');
 
-     if(mounted) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const BottomNavBarMain()));
-      }
-    }
+     if(finalResult['status']){
+       Navigator.pushReplacement(context,
+           MaterialPageRoute(builder: (context) => const BottomNavBarMain()));
+     } else {
 
-   else {
+       planDialog();
+     }
+    } else {
      print(response.reasonPhrase);
    }
    setState(() {
      isLoading = false ;
    });
  }
+
+  List<SubscriptionPlan> planList = [];
+
+ planDialog(){
+
+  showDialog(
+
+    context: context, builder: (context) {
+    return AlertDialog(
+      insetPadding: const EdgeInsets.only(bottom: 80,top: 80),
+      backgroundColor: Colors.transparent,
+      content:
+    SizedBox(
+      width: double.maxFinite,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: planList.length,
+        itemBuilder: (context, index) {
+          return SizedBox(
+            child: SubscriptionWidget(
+              image: 'assets/images/subscriptionImage1.png',
+              plan: planList[index],
+              onTab:() {
+                int amt = double.parse(planList[index].price ?? '0.0').toInt();
+
+                RazorPayHelper razorPay =
+                RazorPayHelper(amt.toString(), (result) async {
+                  if (result != "error") {
+
+                    purchasePlan(planList[index].id.toString(),planList[index].price.toString(),result);
+
+                  } else {
+
+                  }
+                });
+
+                razorPay.init();
+
+
+              },
+
+            ),
+          );
+        },
+      ),
+    ) ,);
+  },) ;
+
+
+ }
+
+  Future<void> getSubscriptionPlan() async {
+
+
+    token = pref?.getString(AppConstants.token) ?? '';
+    try {
+      var headers = {'Authorization': 'Bearer $token'};
+      http.Response response = await http.get(Uri.parse(AppUrl.customerPlans), headers: headers);
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        planList = SubscriptionModel.fromJson(data).planLists ?? [];
+      } else {
+        Fluttertoast.showToast(msg: "Failed to load plans");
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
+  }
+
+  Future<void> purchasePlan(String planId, String amount, String transactionID) async {
+
+
+    String? userData = pref?.getString(AppConstants.userdata);
+
+    if(userData !=null) {
+      user = UserModel.fromJson(jsonDecode(userData));
+    }
+
+
+    // if (isNetwork) {
+    try {
+      var headers = {'Authorization': 'Bearer $token'};
+      var body = {
+        "plan_id":planId,
+        "user_id":user?.id.toString(),
+        "amount":amount,
+        "transaction_id": transactionID
+      };
+      http.Response response =
+      await http.post(Uri.parse(AppUrl.purchasePlans), headers: headers,body: body);
+
+      print('${response.statusCode}_________');
+      print('${body}_________');
+
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        Fluttertoast.showToast(msg: data['message']);
+        Navigator.pop(context);
+      } else {
+        // Handle error response
+        Fluttertoast.showToast(msg: "Failed to purchase plan");
+      }
+    } catch (e) {
+      // Handle network or parsing error
+      Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
+  }
+
+
 }

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart'as http;
+import 'package:ut_messenger/helper/app_contants.dart';
+import 'package:ut_messenger/model/usermodel.dart';
 import '../helper/api.dart';
 import '../helper/colors.dart';
 
@@ -118,7 +120,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   if (value!.isEmpty) {
                     return 'Please enter a password';
                   }
-                  else if (value!.length < 8) {
+                  else if (value.length < 8) {
                     return 'Password is too short';
                   }
                   return null;
@@ -132,14 +134,14 @@ class _ChangePasswordState extends State<ChangePassword> {
 
               TextFormField(
                 controller: _confirmpassController,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.visiblePassword,
                 obscureText: _obscureText2,
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter a password';
                   }
-                  else if (value!.length < 8) {
-                    return 'Password is too short';
+                  else if (value != _passController.text) {
+                    return 'Password do not match.';
                   }
                   return null;
                 },
@@ -172,7 +174,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     },
                   ),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                 ),
               ),
@@ -190,6 +192,11 @@ class _ChangePasswordState extends State<ChangePassword> {
   update() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? mytoken = prefs.getString('token');
+    String? userData = prefs.getString(AppConstants.userdata);
+
+    UserData  user = UserData.fromJson(jsonDecode(userData!));
+
+
 
     // isNetwork1 = await isNetworkAvailable();
 
@@ -202,6 +209,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     };
     var request = http.MultipartRequest('POST', Uri.parse(AppUrl.updateProfile));
     request.fields.addAll({
+      'email':user.email ?? '',
       'password': _passController.text,
     });
 

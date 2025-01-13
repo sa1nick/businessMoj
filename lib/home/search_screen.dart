@@ -108,20 +108,28 @@ class _SearchScreenState extends State<SearchScreen> {
                       ),
                       child:  GestureDetector(
                         onTap:  () async {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      GroupPage(
-                                        name: userList[index].title
-                                            .toString(),
-                                        image: userList[index].imageUrl
-                                            .toString(),
-                                        friendId: userList[index].id
-                                            .toString(),
-                                        chatListData: userList[index],
-                                      )));
-                        },
+
+                          if(userList[index].type == 1 && (userList[index].isBlocked ?? false)) {
+                            Fluttertoast.showToast(msg: '${userList[index].title} has blocked you.');
+                          }else {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => GroupPage(
+                                                    name: userList[index]
+                                                        .title
+                                                        .toString(),
+                                                    image: userList[index]
+                                                        .imageUrl
+                                                        .toString(),
+                                                    friendId: userList[index]
+                                                        .id
+                                                        .toString(),
+                                                    chatListData:
+                                                        userList[index],
+                                                  )));
+                                    }
+                                  },
                         child:  const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 20.0,vertical: 5),
                           child: Text("Chat",style: TextStyle(color: MyColor.white,fontWeight: FontWeight.bold),),

@@ -28,6 +28,7 @@ import 'package:ut_messenger/notification/notification_controller.dart';
 import 'package:ut_messenger/widgets/Block%20_and_report_dialog.dart';
 import 'package:ut_messenger/widgets/logout_dialog.dart';
 import 'package:ut_messenger/widgets/networkimage.dart';
+import 'package:video_compress/video_compress.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../model/chatlist_model.dart';
@@ -47,7 +48,7 @@ class GroupPage extends StatefulWidget {
       required this.image,
       this.chatListData,
       this.myRoomId,
-        this.isBlock,
+      this.isBlock,
       required this.friendId});
 
   @override
@@ -75,7 +76,25 @@ class _GroupPageState extends State<GroupPage> {
       String? filePath = result.files.single.path;
 
       if (filePath != null) {
-        anyfile = File(filePath);
+
+        var temp = File(filePath);
+
+        double kb = await temp.length() / 1024 ;
+
+        if(kb >25600) {
+
+          Fluttertoast.showToast(msg: 'More then 24 MB file size not supported',toastLength: Toast.LENGTH_LONG);
+        }else if(filePath.contains('.mp4')){
+          MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+            filePath,
+            quality: VideoQuality.LowQuality,
+            deleteOrigin: false, // It's false by default
+          );
+          anyfile = File(mediaInfo!.file!.path);
+        }else {
+          anyfile = File(filePath);
+        }
+
 
         String base64Image = base64Encode(anyfile!.readAsBytesSync());
 
@@ -148,31 +167,26 @@ class _GroupPageState extends State<GroupPage> {
     // TODO: implement initState
     super.initState();
 
-    if(widget.isBlock != null && widget.isBlock!){
+    if (widget.isBlock != null && widget.isBlock!) {
       popupItemsList.add({'icon': Icons.report_off, 'title': 'Unblock'});
-    }else if(widget.isBlock != null && widget.isBlock == false) {
+    } else if (widget.isBlock != null && widget.isBlock == false) {
       popupItemsList.add({'icon': Icons.block, 'title': 'Block'});
-    }
-    else if(widget.chatListData?.isBlocked == true && widget.chatListData?.type == 1) {
-          popupItemsList.add({'icon': Icons.report_off, 'title': 'Unblock'});
-
-     } else if(widget.chatListData?.isBlocked == false && widget.chatListData?.type == 1 ){
+    } else if (widget.chatListData?.isBlocked == true &&
+        widget.chatListData?.type == 1) {
+      popupItemsList.add({'icon': Icons.report_off, 'title': 'Unblock'});
+    } else if (widget.chatListData?.isBlocked == false &&
+        widget.chatListData?.type == 1) {
       popupItemsList.add({'icon': Icons.block, 'title': 'Block'});
-
-    } else {
-    }
-
+    } else {}
 
     notificationHandle();
     inIt();
     _initializeRecorder();
   }
 
-  notificationHandle() async{
-
+  notificationHandle() async {
     NotificationController.messageStream.listen((message) {
-
-      if(message.data['type'] == 'forwarded_message') {
+      if (message.data['type'] == 'forwarded_message') {
         if (widget.myRoomId != null && widget.myRoomId != '') {
           channel.sink.add(jsonEncode({
             'type': 'fetch_history',
@@ -191,14 +205,13 @@ class _GroupPageState extends State<GroupPage> {
       }
       // Handle the message and update the chat screen UI
     });
-
-
   }
 
   inIt() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     var userString = pref.getString(AppConstants.userdata);
+
     String? token = pref?.getString('token');
 
     userData = UserData.fromJson(jsonDecode(userString!));
@@ -212,7 +225,8 @@ class _GroupPageState extends State<GroupPage> {
         'receiver_user': widget.friendId,
         'room_id': (widget.myRoomId ?? '').toString(),
       }));
-    } else {
+    }
+    else {
       channel.sink.add(jsonEncode({
         'type': 'fetch_history',
         'sender': currentuser,
@@ -235,9 +249,9 @@ class _GroupPageState extends State<GroupPage> {
 
         print('Data__${data}');
 
-
         if (data['type'] == 'history' &&
-            (data['room_id'].toString() == widget.chatListData?.id.toString() || data['room_id'].toString() == widget.myRoomId)) {
+            (data['room_id'].toString() == widget.chatListData?.id.toString() ||
+                data['room_id'].toString() == widget.myRoomId)) {
           messageList = SmSHistoryModel.fromJson(data).messages ?? [];
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -245,13 +259,11 @@ class _GroupPageState extends State<GroupPage> {
 
           isTyping = false;
           setState(() {});
-
         } else if (data['type'] == 'chat' &&
-            (data['room_id'].toString() == widget.chatListData?.id.toString() || data['room_id'].toString() == widget.myRoomId)) {
+            (data['room_id'].toString() == widget.chatListData?.id.toString() || data['room_id'].toString() == widget.myRoomId) && (data['friend_users'].toString().split(',').any((element) => element == currentuser.toString(),))) {
           print('${widget.chatListData?.id.toString()}__________roroom');
 
-
-          messageList.add( SmSHistoryModel.fromJson(data).messages!.first);
+          messageList.add(SmSHistoryModel.fromJson(data).messages!.first);
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
             scrollController.jumpTo(scrollController.position.maxScrollExtent);
@@ -438,11 +450,11 @@ class _GroupPageState extends State<GroupPage> {
     );
   }
 
-  int returnIndex(){
-    int index =  widget.chatListData!.chatroom!.indexWhere((element) => element.user?.id.toString() != currentuser) ;
+  int returnIndex() {
+    int index = widget.chatListData!.chatroom!
+        .indexWhere((element) => element.user?.id.toString() != currentuser);
     return index != -1 ? index : 1;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -507,8 +519,9 @@ class _GroupPageState extends State<GroupPage> {
           ),
         ),
         actions: widget.friendId == '1'
-                      ? []
-                     : [ selectedMessage.isNotEmpty
+            ? []
+            : [
+                selectedMessage.isNotEmpty
                     ? Row(
                         children: [
                           isDelete
@@ -528,7 +541,12 @@ class _GroupPageState extends State<GroupPage> {
                           ),
                           GestureDetector(
                               onTap: () {
-                                String msg = selectedMessage.map((e) => e.message,).toList().join('\n');
+                                String msg = selectedMessage
+                                    .map(
+                                      (e) => e.message,
+                                    )
+                                    .toList()
+                                    .join('\n');
 
                                 Clipboard.setData(ClipboardData(
                                   text: msg,
@@ -602,94 +620,119 @@ class _GroupPageState extends State<GroupPage> {
                         ],
                       )
                     : PopupMenuButton(
-          color: MyColor.primary,
-          // style: ButtonStyle(backgroundColor: WidgetStateProperty.all(MyColor.primary) ,),
-          itemBuilder: (context) {
-            return [
-              for (int i = 0; i < popupItemsList.length; i++)
-                PopupMenuItem(
-                    value: popupItemsList[i]['title'],
-                    child: ListTile(
-                      onTap: () {
+                        color: MyColor.primary,
+                        // style: ButtonStyle(backgroundColor: WidgetStateProperty.all(MyColor.primary) ,),
+                        itemBuilder: (context) {
+                          return [
+                            for (int i = 0; i < popupItemsList.length; i++)
+                              PopupMenuItem(
+                                  value: popupItemsList[i]['title'],
+                                  child: ListTile(
+                                    onTap: () {
+                                      if (popupItemsList[i]['title'] ==
+                                          'Report') {
+                                        showDialog(
+                                            context: context,
+                                            // barrierDismissible: false,
+                                            builder: (BuildContext context) {
+                                              return widget.chatListData !=
+                                                          null &&
+                                                      widget.chatListData!
+                                                              .type !=
+                                                          1
+                                                  ? BlockReportDialog(
+                                                      onTabYes: () {
+                                                        reportUserOrRoom(
+                                                            roomId: widget
+                                                                    .chatListData
+                                                                    ?.id
+                                                                    .toString() ??
+                                                                '',
+                                                            friendId: '');
+                                                      },
+                                                    )
+                                                  : BlockReportDialog(
+                                                      title: widget.name,
+                                                      onTabYes: () {
+                                                        if (widget
+                                                                .chatListData !=
+                                                            null) {
+                                                          int index =
+                                                              returnIndex();
 
-                        if (popupItemsList[i]['title'] == 'Report') {
-                          showDialog(
-                              context: context,
-                              // barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return widget.chatListData != null && widget.chatListData!.type != 1
-                                    ?  BlockReportDialog(onTabYes: (){
+                                                          reportUserOrRoom(
+                                                              friendId: widget
+                                                                      .chatListData
+                                                                      ?.chatroom![
+                                                                          index]
+                                                                      .user!
+                                                                      .id
+                                                                      .toString() ??
+                                                                  '',
+                                                              roomId: '');
+                                                        } else {
+                                                          reportUserOrRoom(
+                                                              friendId: widget
+                                                                  .friendId,
+                                                              roomId: '');
+                                                        }
+                                                      },
+                                                    );
+                                            });
+                                      } else if (popupItemsList[i]['title'] ==
+                                          'Block') {
+                                        showDialog(
+                                            context: context,
+                                            // barrierDismissible: false,
+                                            builder: (BuildContext context) {
+                                              return BlockReportDialog(
+                                                  title: widget.name,
+                                                  forBlock: true,
+                                                  onTabYes: () {
+                                                    if (widget.isBlock ==
+                                                        null) {
+                                                      int index = returnIndex();
 
-                                      reportUserOrRoom(roomId: widget.chatListData?.id.toString() ?? '',friendId: '');
-                                },)
-                                    : BlockReportDialog(title: widget.name,onTabYes: (){
-                                      if(widget.chatListData != null){
-
-                                      int index =  returnIndex();
-
-                                      reportUserOrRoom(friendId: widget.chatListData?.chatroom![index].user!.id.toString() ?? '',roomId: '' );
-
+                                                      userBlock(widget
+                                                              .chatListData
+                                                              ?.chatroom![index]
+                                                              .user!
+                                                              .id
+                                                              .toString() ??
+                                                          '');
+                                                    } else {
+                                                      userBlock(
+                                                          widget.friendId);
+                                                    }
+                                                  });
+                                            });
                                       } else {
-                                        reportUserOrRoom(friendId: widget.friendId,roomId: '');
+                                        if (widget.isBlock == null) {
+                                          int index = returnIndex();
+
+                                          userBlock(widget.chatListData
+                                                  ?.chatroom![index].user!.id
+                                                  .toString() ??
+                                              '');
+                                        } else {
+                                          userBlock(widget.friendId);
+                                        }
                                       }
-
-                                },);
-                              });
-
-                        }
-
-                        else if (popupItemsList[i]['title'] == 'Block') {
-
-
-                          showDialog(
-                              context: context,
-                              // barrierDismissible: false,
-                              builder: (BuildContext context) {
-                                return  BlockReportDialog(title: widget.name,forBlock: true,onTabYes: (){
-
-
-
-                                  if(widget.isBlock == null){
-
-                                    int index =  returnIndex();
-
-
-                                    userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
-
-                                  } else {
-                                    userBlock(widget.friendId);
-                                  }
-                                });
-                              });
-
-                        } else {
-
-                          if(widget.isBlock == null){
-
-                            int index =  returnIndex();
-
-                            userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
-
-                          } else {
-                            userBlock(widget.friendId);
-                          }
-
-                        }
-                      },
-                      leading: Icon(
-                        popupItemsList[i]['icon'],
-                        color: MyColor.white,
-                      ),
-                      title: Text(
-                        popupItemsList[i]['title'],
-                        style: const TextStyle(
-                            color: MyColor.white,
-                            fontWeight: FontWeight.w700),
-                      ),
-                    ))
-            ];
-          },
-        )
+                                    },
+                                    leading: Icon(
+                                      popupItemsList[i]['icon'],
+                                      color: MyColor.white,
+                                    ),
+                                    title: Text(
+                                      popupItemsList[i]['title'],
+                                      style: const TextStyle(
+                                          color: MyColor.white,
+                                          fontWeight: FontWeight.w700),
+                                    ),
+                                  ))
+                          ];
+                        },
+                      )
               ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -731,7 +774,8 @@ class _GroupPageState extends State<GroupPage> {
               width: MediaQuery.of(context).size.width,
               child: Image.asset(
                 "assets/images/chat_background.png",
-                fit: BoxFit.cover,opacity: AlwaysStoppedAnimation(0.2),
+                fit: BoxFit.cover,
+                opacity: AlwaysStoppedAnimation(0.2),
               ),
             ),
             Column(
@@ -753,9 +797,11 @@ class _GroupPageState extends State<GroupPage> {
                             MessageBubble(
                               index: index,
                               onLongPress: () {
-                                messageList[index].isSelected = !(messageList[index].isSelected ?? false);
+                                messageList[index].isSelected =
+                                    !(messageList[index].isSelected ?? false);
 
-                                isForward = messageList.any((element) => element.isSelected ?? false,
+                                isForward = messageList.any(
+                                  (element) => element.isSelected ?? false,
                                 );
 
                                 if (selectedMessage.contains(message)) {
@@ -802,202 +848,213 @@ class _GroupPageState extends State<GroupPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: widget.chatListData?.type != 1 && widget.chatListData?.chatAccessGroup == 1 && widget.chatListData?.createdBy.toString() != currentuser
+                  child: widget.chatListData?.type != 1 &&
+                          widget.chatListData?.chatAccessGroup == 1 &&
+                          widget.chatListData?.createdBy.toString() !=
+                              currentuser
                       ? Card(
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: RichText(
-                        maxLines: 5,
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-
-                            children: [
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Image.asset(
-                              'assets/images/Loud_Speaker.png',
-                              height: 20,
-                              width: 20,
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: RichText(
+                              maxLines: 5,
+                              textAlign: TextAlign.center,
+                              text: TextSpan(children: [
+                                WidgetSpan(
+                                  alignment: PlaceholderAlignment.middle,
+                                  child: Image.asset(
+                                    'assets/images/Loud_Speaker.png',
+                                    height: 20,
+                                    width: 20,
+                                  ),
+                                ),
+                                const TextSpan(
+                                    text:
+                                        "Admin changed this group's setting to allow only admin to send message to this group",
+                                    style:
+                                        TextStyle(color: MyColor.hintTextColor))
+                              ]),
                             ),
                           ),
-                          const TextSpan(
-                              text: "Admin changed this group's setting to allow only admin to send message to this group",
-                          style: TextStyle(color: MyColor.hintTextColor)
-                          )
-                        ]),
-                      ),
-                    ),
-                  )
+                        )
                       : Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(50),
-                                color: Colors.grey.shade100),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 15),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: TextFormField(
-                                      controller: messageController,
-                                      style: const TextStyle(
-                                          fontSize: 16, color: Colors.black),
-                                      textInputAction: TextInputAction.newline,
-                                      keyboardType: TextInputType.multiline,
-                                      maxLines: null,
-                                      onChanged: (value) {
-                                        // print('12345____________');
-                                        // channel.sink.add(jsonEncode({
-                                        //   'type': 'typing',
-                                        //   "sender": currentuser,
-                                        //   "receiver_user":
-                                        //       widget.friendId,
-                                        //   "messageType": 1,
-                                        //   "isTyping": true
-                                        // }));
-                                      },
-                                      onEditingComplete: () {
-                                        // channel.sink.add(jsonEncode({
-                                        //   'type': 'typing',
-                                        //   "sender": currentuser,
-                                        //   "receiver_user":
-                                        //       widget.friendId,
-                                        //   "messageType": 1,
-                                        //   "isTyping": false
-                                        // }));
-                                      },
-                                      decoration: const InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(
-                                            vertical: 8.0, horizontal: 0.0),
-                                        hintText: 'Message...',
-                                        hintStyle: TextStyle(
-                                          color: Color(0xff8E8E93),
-                                        ),
-                                        focusedBorder: InputBorder.none,
-                                        enabledBorder: InputBorder.none,
-                                        errorBorder: InputBorder.none,
-                                        disabledBorder: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                  _isRecording
-                                      ? Text(_formatTime(_elapsedTime))
-                                      : Row(
-                                          children: [
-                                            GestureDetector(
-                                                onTap: () {
-                                                  pickfiles();
-                                                },
-                                                child: const Icon(
-                                                    Icons.attach_file)),
-                                            const SizedBox(
-                                              width: 5,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(50),
+                                      color: Colors.grey.shade100),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: messageController,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black),
+                                            textInputAction:
+                                                TextInputAction.newline,
+                                            keyboardType:
+                                                TextInputType.multiline,
+                                            maxLines: null,
+                                            onChanged: (value) {
+                                              // print('12345____________');
+                                              // channel.sink.add(jsonEncode({
+                                              //   'type': 'typing',
+                                              //   "sender": currentuser,
+                                              //   "receiver_user":
+                                              //       widget.friendId,
+                                              //   "messageType": 1,
+                                              //   "isTyping": true
+                                              // }));
+                                            },
+                                            onEditingComplete: () {
+                                              // channel.sink.add(jsonEncode({
+                                              //   'type': 'typing',
+                                              //   "sender": currentuser,
+                                              //   "receiver_user":
+                                              //       widget.friendId,
+                                              //   "messageType": 1,
+                                              //   "isTyping": false
+                                              // }));
+                                            },
+                                            decoration: const InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      vertical: 8.0,
+                                                      horizontal: 0.0),
+                                              hintText: 'Message...',
+                                              hintStyle: TextStyle(
+                                                color: Color(0xff8E8E93),
+                                              ),
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
                                             ),
-                                            GestureDetector(
-                                                onTap: () {
-                                                  showAlertDialog(context);
-                                                },
-                                                child: const Icon(
-                                                    Icons.camera_alt)),
-                                            const SizedBox(
-                                              width: 10,
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                  GestureDetector(
-                                      // onPanStart: (f){
-                                      //   _startRecording();
-                                      // },
-                                      // onPanEnd: (d){
-                                      //   _stopRecording();
-                                      // },
-                                      onTap: () {
-                                        if (_isRecording) {
-                                          _stopRecording();
-                                        } else {
-                                          _startRecording();
-                                        }
-                                      },
-                                      child: Icon(
-                                        _isRecording ? Icons.stop : Icons.mic,
-                                      )),
+                                        _isRecording
+                                            ? Text(_formatTime(_elapsedTime))
+                                            : Row(
+                                                children: [
+                                                  GestureDetector(
+                                                      onTap: () {
+                                                        pickfiles();
+                                                      },
+                                                      child: const Icon(
+                                                          Icons.attach_file)),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  GestureDetector(
+                                                      onTap: () {
+                                                        showAlertDialog(
+                                                            context);
+                                                      },
+                                                      child: const Icon(
+                                                          Icons.camera_alt)),
+                                                  const SizedBox(
+                                                    width: 10,
+                                                  ),
+                                                ],
+                                              ),
+                                        GestureDetector(
+                                            // onPanStart: (f){
+                                            //   _startRecording();
+                                            // },
+                                            // onPanEnd: (d){
+                                            //   _stopRecording();
+                                            // },
+                                            onTap: () {
+                                              if (_isRecording) {
+                                                _stopRecording();
+                                              } else {
+                                                _startRecording();
+                                              }
+                                            },
+                                            child: Icon(
+                                              _isRecording
+                                                  ? Icons.stop
+                                                  : Icons.mic,
+                                            )),
 
-                                   /*if (_audioPath.isNotEmpty)
+                                        /*if (_audioPath.isNotEmpty)
                                     IconButton(
                                       icon: const Icon(Icons.play_arrow),
                                       onPressed: _playRecording,
                                     ),*/
-                                ],
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            InkWell(
+                              onTap: () {
+                                if (messageController.text.isEmpty) {
+                                  Fluttertoast.showToast(
+                                      msg: "message field can't be empty");
+                                } else if ((widget.isBlock != null &&
+                                        widget.isBlock!) ||
+                                    (widget.chatListData != null &&
+                                        widget.chatListData!.isBlocked!)) {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "You've blocked this user. Please unblock them to send a message.");
+                                } else {
+                                  channel.sink.add(jsonEncode({
+                                    'type': 'typing',
+                                    "sender": currentuser,
+                                    "receiver_user": widget.friendId,
+                                    "messageType": 1,
+                                    "isTyping": false,
+                                    'room_id': widget.chatListData?.id == null
+                                        ? widget.myRoomId == ''
+                                            ? null
+                                            : widget.myRoomId
+                                        : widget.chatListData?.id.toString(),
+                                    'sender_name': userData?.name
+                                  }));
+
+                                  channel.sink.add(jsonEncode({
+                                    'type': 'chat',
+                                    "user_type": 'user',
+                                    "sender": currentuser,
+                                    "receiver_user": widget.friendId,
+                                    "content": messageController.text,
+                                    "messageType": 1,
+                                    'room_id': widget.chatListData?.id == null
+                                        ? widget.myRoomId == ''
+                                            ? ''
+                                            : widget.myRoomId
+                                        : widget.chatListData?.id.toString(),
+                                    'sender_name': userData?.name
+                                  }));
+
+                                  //  messageList.add(Messages(createdAt: '${DateTime.now()}', createdBy: 2,id: 5464,message: messageController.text,type: 1));
+
+                                  messageController.clear();
+                                }
+                              },
+                              child: const CircleAvatar(
+                                backgroundColor: MyColor.primary,
+                                radius: 20,
+                                child: Icon(
+                                  Icons.send,
+                                  size: 19,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          ],
                         ),
-                      ),
-                      InkWell(
-                        onTap: () {
-                          if (messageController.text.isEmpty) {
-                            Fluttertoast.showToast( msg: "message field can't be empty");
-                          } else if((widget.isBlock !=null && widget.isBlock!) || (widget.chatListData !=null && widget.chatListData!.isBlocked!))
-                          {
-                            Fluttertoast.showToast( msg: "You've blocked this user. Please unblock them to send a message.");
-
-                          } else {
-                            channel.sink.add(
-                                jsonEncode({
-                              'type': 'typing',
-                              "sender": currentuser,
-                              "receiver_user": widget.friendId,
-                              "messageType": 1,
-                              "isTyping": false,
-                              'room_id': widget.chatListData?.id == null
-                                  ? widget.myRoomId == ''
-                                      ? null
-                                      : widget.myRoomId
-                                  : widget.chatListData?.id.toString(),
-                              'sender_name': userData?.name
-                            }));
-
-
-                            channel.sink.add(jsonEncode({
-                              'type': 'chat',
-                              "user_type": 'user',
-                              "sender": currentuser,
-                              "receiver_user": widget.friendId,
-                              "content": messageController.text,
-                              "messageType": 1,
-                              'room_id': widget.chatListData?.id == null
-                                  ? widget.myRoomId == ''
-                                      ? ''
-                                      : widget.myRoomId
-                                  : widget.chatListData?.id.toString(),
-                              'sender_name': userData?.name
-                            }));
-
-
-                            //  messageList.add(Messages(createdAt: '${DateTime.now()}', createdBy: 2,id: 5464,message: messageController.text,type: 1));
-
-                            messageController.clear();
-                          }
-                        },
-                        child: const CircleAvatar(
-                          backgroundColor: MyColor.primary,
-                          radius: 20,
-                          child: Icon(
-                            Icons.send,
-                            size: 19,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    ],
-                  )
-                  ,
                 )
               ],
             ),
@@ -1135,8 +1192,6 @@ class _GroupPageState extends State<GroupPage> {
                   .join(',')
             }));
 
-
-
             Navigator.of(context).pop();
 
             // Perform action and close dialog
@@ -1169,9 +1224,9 @@ class _GroupPageState extends State<GroupPage> {
         var data = jsonDecode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);
+        callSocketHistory();
       } else {
-        // Handle error response
-        Fluttertoast.showToast(msg: "Failed to load plans");
+        Fluttertoast.showToast(msg: "Failed to forward ");
       }
 
       messageList.forEach(
@@ -1187,14 +1242,13 @@ class _GroupPageState extends State<GroupPage> {
     }
   }
 
-
   Future<void> userBlock(String friendId) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     String? token = pref?.getString('token');
     try {
       var headers = {'Authorization': 'Bearer $token'};
-      var body =    {'friend_id': friendId};
+      var body = {'friend_id': friendId};
       http.Response response = await http.post(Uri.parse(AppUrl.blockUserApi),
           headers: headers, body: body);
 
@@ -1202,31 +1256,31 @@ class _GroupPageState extends State<GroupPage> {
         var data = jsonDecode(response.body);
 
         Fluttertoast.showToast(msg: data['message']);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BottomNavBarMain(),));
-
-
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BottomNavBarMain(),
+            ));
       } else {
         // Handle error response
         Fluttertoast.showToast(msg: "Failed to block");
       }
-
     } catch (e) {
       // Handle network or parsing error
       Fluttertoast.showToast(msg: "An error occurred: $e");
     }
   }
 
-  Future<void> reportUserOrRoom({required String roomId, required String friendId}) async {
+  Future<void> reportUserOrRoom(
+      {required String roomId, required String friendId}) async
+  {
     SharedPreferences pref = await SharedPreferences.getInstance();
 
-    String? token = pref?.getString('token');
+    String? token = pref.getString('token');
 
-    setState(() {
-      isForwardLoading = true;
-    });
     try {
       var headers = {'Authorization': 'Bearer $token'};
-      var body =    {'friend_id': friendId, 'room_id': roomId};
+      var body = {'friend_id': friendId, 'room_id': roomId};
       http.Response response = await http.post(Uri.parse(AppUrl.reportApi),
           headers: headers, body: body);
 
@@ -1238,10 +1292,28 @@ class _GroupPageState extends State<GroupPage> {
         // Handle error response
         Fluttertoast.showToast(msg: "Failed to block");
       }
-
     } catch (e) {
       // Handle network or parsing error
       Fluttertoast.showToast(msg: "An error occurred: $e");
+    }
+  }
+
+  callSocketHistory(){
+    if (widget.myRoomId != null && widget.myRoomId != '') {
+      channel.sink.add(jsonEncode({
+        'type': 'fetch_history',
+        'sender': currentuser,
+        'receiver_user': widget.friendId,
+        'room_id': (widget.myRoomId ?? '').toString(),
+      }));
+    }
+    else {
+      channel.sink.add(jsonEncode({
+        'type': 'fetch_history',
+        'sender': currentuser,
+        'receiver_user': widget.friendId,
+        'room_id': (widget.chatListData?.id ?? '').toString(),
+      }));
     }
   }
 }
@@ -1317,8 +1389,8 @@ class MessageBubble extends StatelessWidget {
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
                 child: InkWell(
-                  onTap: (){
-                    if(isValidLink(message.message ?? '')){
+                  onTap: () {
+                    if (isValidLink(message.message ?? '')) {
                       launchUrl(Uri.parse(message.message ?? ''));
                     }
                   },
@@ -1333,7 +1405,7 @@ class MessageBubble extends StatelessWidget {
                               child: ClipOval(
                                 child: AppImage(
                                   image:
-                                      '${AppUrl.profileURL}${currentUserImage}',
+                                  currentUserImage!.contains('http') ? '$currentUserImage'  :'${AppUrl.profileURL}$currentUserImage',
                                 ),
                               ),
                             )
@@ -1398,7 +1470,10 @@ class MessageBubble extends StatelessWidget {
                                                 currentUser
                                             ? MyColor.white
                                             : Colors.black,
-                                        decoration: isValidLink(message.message ?? '') ? TextDecoration.underline : null,
+                                        decoration:
+                                            isValidLink(message.message ?? '')
+                                                ? TextDecoration.underline
+                                                : null,
                                         fontWeight: FontWeight.w700),
                               )
                             ],
@@ -1427,7 +1502,7 @@ class MessageBubble extends StatelessWidget {
                     );
                   },
                   child: Material(
-                    elevation: 1,
+                    elevation: 0,
                     borderRadius: message.createdBy.toString() == currentUser
                         ? const BorderRadius.only(
                             topLeft: Radius.circular(10.0),
@@ -1438,16 +1513,21 @@ class MessageBubble extends StatelessWidget {
                             bottomLeft: Radius.circular(10),
                             bottomRight: Radius.circular(0)),
                     color: message.createdBy.toString() == currentUser
-                        ? MyColor.primary
-                        : MyColor.secondary,
+                        ? Colors.transparent//MyColor.primary
+                        : Colors.transparent,//MyColor.secondary,
                     child: Padding(
                       padding: const EdgeInsets.all(5.0),
-                      child: Image(
+                      child: AppImage(
+                        image: '${AppUrl.fileURL}${message.message}' ?? '',
+                        height: MediaQuery.of(context).size.height * .2,
+                        width: MediaQuery.of(context).size.width * .5,
+                        fit: BoxFit.cover,
+                      ) /*Image(
                           height: MediaQuery.of(context).size.height * .2,
                           width: MediaQuery.of(context).size.width * .5,
                           fit: BoxFit.cover,
-                          image: NetworkImage(
-                              '${AppUrl.fileURL}${message.message}' ?? '')),
+                          image: )*/
+                      ,
                     ),
                   ),
                 ),
@@ -1544,7 +1624,6 @@ class MessageBubble extends StatelessWidget {
     );
   }
 
-
   bool isValidLink(String text) {
     final uri = Uri.tryParse(text);
     return uri != null && uri.hasScheme && uri.hasAuthority;
@@ -1582,9 +1661,7 @@ class ChatBubble extends StatefulWidget {
 }
 
 class _ChatBubbleState extends State<ChatBubble> {
-
   FlutterSoundPlayer soundPlayer1 = FlutterSoundPlayer();
-
 
   @override
   void initState() {
@@ -1594,9 +1671,10 @@ class _ChatBubbleState extends State<ChatBubble> {
     init();
   }
 
-  init() async{
+  init() async {
     await soundPlayer1.openPlayer();
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1623,16 +1701,18 @@ class _ChatBubbleState extends State<ChatBubble> {
               if (widget.message.isplaying ?? false) {
                 stopAudio(widget.index);
               } else {
-                playAudio('${AppUrl.fileURL}${widget.message.message}', widget.index);
+                playAudio(
+                    '${AppUrl.fileURL}${widget.message.message}', widget.index);
               }
-
             },
             child: widget.message.isBuffering ?? false
                 ? const CircularProgressIndicator(
                     strokeWidth: 2,
                     valueColor: AlwaysStoppedAnimation(Colors.blue))
                 : Icon(
-              widget.message.isplaying ?? false ? Icons.pause : Icons.play_arrow,
+                    widget.message.isplaying ?? false
+                        ? Icons.pause
+                        : Icons.play_arrow,
                     color: Colors.blue,
                     size: 30,
                   ),
@@ -1645,14 +1725,21 @@ class _ChatBubbleState extends State<ChatBubble> {
                 Row(
                   children: [
                     Text(
-                      formatDuration(widget.message.currentPosition ?? Duration.zero),//widget.formatDuration(widget.currentPosition),
+                      formatDuration(
+                          widget.message.currentPosition ?? Duration.zero),
+                      //widget.formatDuration(widget.currentPosition),
                       style: const TextStyle(fontSize: 12, color: Colors.white),
                     ),
                     Expanded(
                       child: Slider(
-                        value: (widget.message.currentPosition ?? Duration.zero).inSeconds.toDouble(),
-                        max: (widget.message.totalDuration?.inSeconds ?? 0).toDouble() > 0
-                            ? (widget.message.totalDuration?.inSeconds ?? 0).toDouble()
+                        value: (widget.message.currentPosition ?? Duration.zero)
+                            .inSeconds
+                            .toDouble(),
+                        max: (widget.message.totalDuration?.inSeconds ?? 0)
+                                    .toDouble() >
+                                0
+                            ? (widget.message.totalDuration?.inSeconds ?? 0)
+                                .toDouble()
                             : 1,
                         onChanged: (value) {
                           soundPlayer1
@@ -1663,7 +1750,9 @@ class _ChatBubbleState extends State<ChatBubble> {
                       ),
                     ),
                     Text(
-                      formatDuration(widget.message.totalDuration ?? Duration.zero),//widget.formatDuration(widget.totalDuration)
+                      formatDuration(
+                          widget.message.totalDuration ?? Duration.zero),
+                      //widget.formatDuration(widget.totalDuration)
                       style: const TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ],
@@ -1675,12 +1764,6 @@ class _ChatBubbleState extends State<ChatBubble> {
       ),
     );
   }
-
-
-
-
-
-
 
   void stopAudio(int index) async {
     await soundPlayer1.stopPlayer();
@@ -1738,8 +1821,6 @@ class _ChatBubbleState extends State<ChatBubble> {
     return "$minutes:$seconds";
   }
 
-
-
   @override
   void dispose() {
     // TODO: implement dispose
@@ -1762,10 +1843,10 @@ class FullScreenImage extends StatelessWidget {
           Navigator.pop(context); // Close the full-screen view on tap
         },
         child: Center(
-          child: Image.network(
+          child: AppImage(fit: BoxFit.contain ,image: imageUrl,height: 600,width: 400,) /*Image.network(
             imageUrl,
             fit: BoxFit.contain, // Ensure the image is fully visible
-          ),
+          )*/,
         ),
       ),
     );

@@ -6,8 +6,9 @@ class MyContactModel {
   String? roomId;
   bool? isSelected;
   bool? isBlocked;
+  bool? imblocked;
 
-  MyContactModel({this.id, this.name, this.image, this.phone});
+  MyContactModel({this.id, this.name, this.image, this.phone,this.imblocked});
 
   MyContactModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -16,6 +17,7 @@ class MyContactModel {
     phone = json['phone'];
     roomId = json['room_id'];
     isBlocked = json['is_blocked'];
+    imblocked = json['i_m_blocked'];
     isSelected= false;
   }
 

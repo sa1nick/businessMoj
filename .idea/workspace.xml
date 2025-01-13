@@ -9,28 +9,24 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="all bugs done and going to start live process.">
-      <change afterPath="$PROJECT_DIR$/assets/images/businessmojdoodle.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/images/delete_account.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/auth/accept_privacy_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/lib/widgets/Block _and_report_dialog.dart" afterDir="false" />
+    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="Real time delete and live process.with block and report feature">
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/auth/otp_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/auth/otp_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/chat/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/chat_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/add_group.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/add_group.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/group_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helper/api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drawer_page/change_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drawer_page/change_password.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/home_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/home/search_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/search_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/settings.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/settings.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/model/chatlist_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/chatlist_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/model/contact_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/contact_model.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/services/payment_service/razor_pay_payment.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/services/payment_service/razor_pay_payment.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/logout_dialog.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/logout_dialog.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/networkimage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/networkimage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/subscription_widget.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/subscription_widget.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
@@ -209,7 +205,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736140198572</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Real time delete and live process.with block and report feature">
+      <option name="closed" value="true" />
+      <created>1736337762194</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1736337762194</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -233,7 +237,9 @@
     <MESSAGE value="room id and unread count implemented." />
     <MESSAGE value="broadcast voice recorder" />
     <MESSAGE value="all bugs done and going to start live process." />
-    <option name="LAST_COMMIT_MESSAGE" value="all bugs done and going to start live process." />
+    <MESSAGE value="Real time delete and live process." />
+    <MESSAGE value="Real time delete and live process.with block and report feature" />
+    <option name="LAST_COMMIT_MESSAGE" value="Real time delete and live process.with block and report feature" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

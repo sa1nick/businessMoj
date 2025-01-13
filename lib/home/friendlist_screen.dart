@@ -287,6 +287,12 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                         children: [
                                           GestureDetector(
                                             onTap: () {
+
+                                              if(friend.imblocked ?? false) {
+                                                Fluttertoast.showToast(msg: '${friend.name} has blocked you.');
+                                              }else {
+
+
                                               Navigator.push(
                                                   context,
                                                   MaterialPageRoute(
@@ -301,7 +307,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
                                                 contactPermission();
 
-                                                          },);
+                                                          },); }
                                             },
                                             child: Padding(
                                               padding:

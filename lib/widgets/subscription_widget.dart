@@ -23,6 +23,7 @@ class SubscriptionWidget extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+
             children: [
               Center(
                   child: Container(

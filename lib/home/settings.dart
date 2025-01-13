@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -269,6 +270,8 @@ String? firstname,lastname,phoneNo;
         // Convert the response to a string and parse it
         final responseBody = await response.stream.bytesToString();
         final parsedJson = jsonDecode(responseBody);
+        log(responseBody);
+        prefs.setString(AppConstants.userdata,responseBody);
 
         setState(() {
           getProfileModel = GetProfileModel.fromJson(parsedJson);
