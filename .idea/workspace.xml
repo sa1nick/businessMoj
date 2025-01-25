@@ -9,14 +9,16 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="Real time delete and live process.with block and report feature">
+    <list default="true" id="a14c71e4-83e3-4d30-bd52-d5ee5117741a" name="Changes" comment="video compressor added with size check.">
       <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.flutter-plugins-dependencies" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins-dependencies" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/settings.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/chat/group_detail.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_detail.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/auth/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/auth/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/broadcast_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/chat/chat_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/chat_page.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/chat/group_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/chat/group_page.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/friendlist_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helper/api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helper/api.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/home/home_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/home/home_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
     </list>
@@ -52,7 +54,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/alphawizzflutterteam/businessmoj.git&quot;,
-    &quot;accountId&quot;: &quot;fa7a97f9-dfa8-4388-8ad1-baa420d10b9d&quot;
+    &quot;accountId&quot;: &quot;886ec790-aabb-413b-9614-873672c52090&quot;
   }
 }</component>
   <component name="MarkdownSettingsMigration">
@@ -102,7 +104,6 @@
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/android" />
       <recent name="D:\businessmoj\businessmoj\assets\images" />
       <recent name="D:\businessmoj\businessmoj\android\app\src\main\res\drawable" />
       <recent name="C:\Users\Alphawizz\AndroidStudioProjects\ut_messenger\assets\images" />
@@ -204,7 +205,15 @@
       <option name="project" value="LOCAL" />
       <updated>1736337762194</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="video compressor added with size check.">
+      <option name="closed" value="true" />
+      <created>1736771796424</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1736771796424</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -230,7 +239,8 @@
     <MESSAGE value="all bugs done and going to start live process." />
     <MESSAGE value="Real time delete and live process." />
     <MESSAGE value="Real time delete and live process.with block and report feature" />
-    <option name="LAST_COMMIT_MESSAGE" value="Real time delete and live process.with block and report feature" />
+    <MESSAGE value="video compressor added with size check." />
+    <option name="LAST_COMMIT_MESSAGE" value="video compressor added with size check." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

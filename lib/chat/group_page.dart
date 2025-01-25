@@ -145,7 +145,7 @@ class _GroupPageState extends State<GroupPage> {
   UserData? userData;
 
   WebSocketChannel channel = WebSocketChannel.connect(
-    Uri.parse('wss://businessmoj.com:8084'),
+    Uri.parse(AppUrl.webSocketURL),
   );
 
   List<Messages> messageList = [];
@@ -446,7 +446,7 @@ class _GroupPageState extends State<GroupPage> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('wss://businessmoj.com:8084'),
+      Uri.parse(AppUrl.webSocketURL),
     );
   }
 
@@ -619,7 +619,8 @@ class _GroupPageState extends State<GroupPage> {
               child: const Icon(Icons.video_call_outlined)),*/
                         ],
                       )
-                    : PopupMenuButton(
+                    :
+                PopupMenuButton(
                         color: MyColor.primary,
                         // style: ButtonStyle(backgroundColor: WidgetStateProperty.all(MyColor.primary) ,),
                         itemBuilder: (context) {
@@ -1031,8 +1032,7 @@ class _GroupPageState extends State<GroupPage> {
                                     "receiver_user": widget.friendId,
                                     "content": messageController.text,
                                     "messageType": 1,
-                                    'room_id': widget.chatListData?.id == null
-                                        ? widget.myRoomId == ''
+                                    'room_id': widget.chatListData?.id == null ? widget.myRoomId == ''
                                             ? ''
                                             : widget.myRoomId
                                         : widget.chatListData?.id.toString(),

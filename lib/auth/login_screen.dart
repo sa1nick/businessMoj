@@ -452,7 +452,7 @@ class _LoginPageState extends State<LoginPage> {
     } else if (response.statusCode == 403) {
       setState(() {
         isLoading = false;
-        Fluttertoast.showToast(msg: "Invalid phone");
+        Fluttertoast.showToast(msg: "User Not found");
       });
     } else {
       // Fluttertoast.showToast(msg: "Invalid email or password");

@@ -346,7 +346,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       msg:
                                                           '${users.title} has blocked you.');
                                                 } else {
-                                                  print('title--->${users.title.toString()}');
+                                                  print(
+                                                      'title--->${users.title.toString()}');
                                                   Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
@@ -464,7 +465,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       children: [
                                                         Text(
                                                           users.title ??
-                                                              'Unknown', //chatOrGroupname(users)
+                                                              'Unknown',
+                                                          //chatOrGroupname(users)
                                                           style: const TextStyle(
                                                               fontSize: 15,
                                                               fontWeight:

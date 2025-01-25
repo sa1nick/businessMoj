@@ -2,6 +2,8 @@
 class AppUrl {
  // static const baseURL ='https://chat-application.alphawizzserver.com/api/v1/';
   static const baseURL ='https://businessmoj.com/api/v1/';
+  //static const webSocketURL ='wss://businessmoj.com:8085';
+   static const webSocketURL ='wss://businessmoj.com:8084';
  // static const fileURL ='https://chat-application.alphawizzserver.com/storage/app/chat/';
   static const fileURL ='https://businessmoj.com/storage/app/chat/';
   //static const profileURL ='https://chat-application.alphawizzserver.com/storage/app/public/profile/';

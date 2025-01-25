@@ -118,7 +118,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
   String? currentuser;
   UserData ? userData ;
 
-  WebSocketChannel channel = WebSocketChannel.connect( Uri.parse('wss://businessmoj.com:8084'),);
+  WebSocketChannel channel = WebSocketChannel.connect( Uri.parse(AppUrl.webSocketURL),);
 
   @override
   void initState() {
@@ -350,7 +350,7 @@ class _BroadcastPageState extends State<BroadcastPage> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('wss://businessmoj.com:8084'),
+      Uri.parse(AppUrl.webSocketURL),
     );
   }
 

@@ -93,7 +93,7 @@ class _ChatPageState extends State<ChatPage> {
 
 
   WebSocketChannel channel = WebSocketChannel.connect(
-    Uri.parse('wss://businessmoj.com:8084'),
+    Uri.parse(AppUrl.webSocketURL),
   );
 
   @override
@@ -183,7 +183,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void initializeWebSocket() {
     channel = WebSocketChannel.connect(
-      Uri.parse('wss://businessmoj.com:8084'),
+      Uri.parse(AppUrl.webSocketURL),
     );
   }
 
