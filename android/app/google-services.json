@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "157135741762",
+    "project_id": "businessmoj-6b0b0",
+    "storage_bucket": "businessmoj-6b0b0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:157135741762:android:d2719d66d58709cce61edb",
+        "android_client_info": {
+          "package_name": "com.businessmoj.main"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAiUTeYzzq4nD7btvbHV_XRJP10r2q8q68"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
