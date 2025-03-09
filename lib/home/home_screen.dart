@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -650,8 +651,14 @@ class _HomeScreenState extends State<HomeScreen> {
       return '$months month${months == 1 ? '' : 's'} ago';
     }
   }
-
   Future<void> getChatList() async {
+    int time = 0;
+    print('${time}________________FSDfsdf++++++++++  1');
+
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      time++ ;
+    },);
+
     setState(() {
       loading = true;
     });
@@ -671,6 +678,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (response.statusCode == 200) {
         final responseBody = await response.stream.bytesToString();
+        print('${time}________________FSDfsdf++++++++++  2');
+
         final parsedJson = jsonDecode(responseBody);
         // List<ChatListData> temp = MyChatListModel.fromJson(parsedJson).data ?? [];
 
@@ -680,6 +689,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 b.lastUnreadDate ?? DateTime.now().toString())
             .compareTo(
                 DateTime.parse(a.lastUnreadDate ?? DateTime.now().toString())));
+
+        print('${time}________________FSDfsdf++++++++++  3');
+
       } else {
         Fluttertoast.showToast(msg: "Failed to load chat");
       }

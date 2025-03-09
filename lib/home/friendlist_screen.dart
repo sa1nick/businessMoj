@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:contacts_service/contacts_service.dart';
+// import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 // import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 
@@ -46,9 +47,10 @@ class _FriendListScreenState extends State<FriendListScreen> {
 
   bool isNetwork = false;
   bool loading = false;
-  List<Contact>? _contacts;
+  // List<Contact>? _contacts;
   List<MyContactModel> myContactsList = [];
   List<MyContactModel> mygropuList = [];
+  List<String> myPhoneNumber = [];
   SharedPreferences? prefs;
 
   ///for many bool variable handle in one variable
@@ -83,7 +85,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
       tempList = myContactsList;
       setState(() {});
     } else {
-      contactPermission();
+      //contactPermission();
     }
 
     print("userId: $vId");
@@ -93,7 +95,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
     await Future.delayed(
         const Duration(milliseconds: 100)); // Simulate a network call
     setState(() {
-      contactPermission();
+      // contactPermission();
     });
   }
 
@@ -384,7 +386,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
                                                                                 friend.isBlocked,
                                                                           ))).then(
                                                                 (value) {
-                                                                  contactPermission();
+                                                                  myContacts(myPhoneNumber);
                                                                 },
                                                               );
                                                             }
@@ -452,6 +454,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
       print(contact.join(','));
 
       log(token!);
+      print('${timera}_________________________________six');
 
       if (response.statusCode == 200) {
         print('${response.body}');
@@ -464,6 +467,7 @@ class _FriendListScreenState extends State<FriendListScreen> {
               (e) => MyContactModel.fromJson(e),
             )
             .toList();
+        print('${timera}_________________________________seven');
 
         tempList = myContactsList;
       } else {
@@ -480,26 +484,36 @@ class _FriendListScreenState extends State<FriendListScreen> {
     });
   }
 
-  Future<List<Contact>?> contactPermission() async {
+  int timera = 0;
+  /*Future<List<Contact>?> contactPermission() async {
+    Timer.periodic(Duration(seconds: 1), (timer) {
+      timera++ ;
+    },);
     setState(() {
       loading = true;
     });
 
     if (await Permission.contacts.request().isGranted) {
       // Fetch contacts from the device
-      Iterable<Contact> contacts = await ContactsService.getContacts();
+       Iterable<Contact> contacts = await ContactsService.getContacts(withThumbnails: false,photoHighResolution: false,);
 
-      _contacts = contacts.toList();
+      print('${timera}_________________________________second');
+
+
+      // _contacts = contacts.toList();
 
       List<String> phoneNumbers = contacts
           .where((contact) => contact.phones != null)
           .expand((contact) => contact.phones!)
           .map((phone) => normalizePhoneNumber(phone.value!))
           .toList();
+      myPhoneNumber = phoneNumbers ;
+      print('${timera}_________________________________fourth');
 
-      myContacts(phoneNumbers);
+
+      myContacts([]);
     }
-  }
+  }*/
 
   bool isLoading = false;
 

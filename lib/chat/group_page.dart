@@ -521,220 +521,157 @@ class _GroupPageState extends State<GroupPage> {
         actions: widget.friendId == '1'
             ? []
             : [
-                selectedMessage.isNotEmpty
-                    ? Row(
-                        children: [
-                          isDelete
-                              ? const SizedBox()
-                              : GestureDetector(
-                                  onTap: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return confirmDialog();
-                                      },
-                                    );
-                                  },
-                                  child: const Icon(Icons.delete)),
-                          const SizedBox(
-                            width: 15,
-                          ),
-                          GestureDetector(
-                              onTap: () {
-                                String msg = selectedMessage
-                                    .map(
-                                      (e) => e.message,
-                                    )
-                                    .toList()
-                                    .join('\n');
+          selectedMessage.isNotEmpty
+              ? Row(
+            children: [
+              // Allow deletion of both sent and received messages
+              isDelete || selectedMessage.isNotEmpty
+                  ? GestureDetector(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return confirmDialog();
+                    },
+                  );
+                },
+                child: const Icon(Icons.delete),
+              )
+                  : const SizedBox(),
+              const SizedBox(width: 15),
 
-                                Clipboard.setData(ClipboardData(
-                                  text: msg,
-                                ));
-                                Fluttertoast.showToast(msg: 'message copied');
-                                messageList.forEach(
-                                  (element) => element.isSelected = false,
-                                );
-                                selectedMessage = [];
-                                setState(() {});
-                              },
-                              child: const Icon(
-                                Icons.copy,
-                                size: 20,
-                              )),
-                          // GestureDetector(
-                          //     onTap: () {
-                          //       Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //               builder: (context) => VoiceCall(
-                          //                 frnd_id: widget.friendId,
-                          //               )));
-                          //     },
-                          //     child: const Icon(Icons.call)),
-                          const SizedBox(
-                            width: 15,
-                          ),
+              // Copy selected messages
+              GestureDetector(
+                onTap: () {
+                  String msg = selectedMessage
+                      .map((e) => e.message)
+                      .toList()
+                      .join('\n');
 
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                        builder: (context) => const HomeScreen(
-                                              fromChat: true,
-                                            ))).then(
-                                  (value) {
-                                    if (value != null) {
-                                      List<ChatListData> selectedChat =
-                                          value as List<ChatListData>;
+                  Clipboard.setData(ClipboardData(text: msg));
+                  Fluttertoast.showToast(msg: 'Message copied');
 
-                                      forwardMessage(
-                                          '',
-                                          selectedMessage
-                                              .map(
-                                                (e) => e.id.toString(),
-                                              )
-                                              .toList()
-                                              .join(','),
-                                          selectedChat
-                                              .map(
-                                                (e) => e.id.toString(),
-                                              )
-                                              .toList()
-                                              .join(','));
-                                    }
-                                  },
-                                );
-                              },
-                              child: const Icon(Icons.shortcut)),
-                          /*GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            CallScreen(frnd_id: widget.friendId)));
-              },
-              child: const Icon(Icons.video_call_outlined)),*/
-                        ],
-                      )
-                    :
-                PopupMenuButton(
-                        color: MyColor.primary,
-                        // style: ButtonStyle(backgroundColor: WidgetStateProperty.all(MyColor.primary) ,),
-                        itemBuilder: (context) {
-                          return [
-                            for (int i = 0; i < popupItemsList.length; i++)
-                              PopupMenuItem(
-                                  value: popupItemsList[i]['title'],
-                                  child: ListTile(
-                                    onTap: () {
-                                      if (popupItemsList[i]['title'] ==
-                                          'Report') {
-                                        showDialog(
-                                            context: context,
-                                            // barrierDismissible: false,
-                                            builder: (BuildContext context) {
-                                              return widget.chatListData !=
-                                                          null &&
-                                                      widget.chatListData!
-                                                              .type !=
-                                                          1
-                                                  ? BlockReportDialog(
-                                                      onTabYes: () {
-                                                        reportUserOrRoom(
-                                                            roomId: widget
-                                                                    .chatListData
-                                                                    ?.id
-                                                                    .toString() ??
-                                                                '',
-                                                            friendId: '');
-                                                      },
-                                                    )
-                                                  : BlockReportDialog(
-                                                      title: widget.name,
-                                                      onTabYes: () {
-                                                        if (widget
-                                                                .chatListData !=
-                                                            null) {
-                                                          int index =
-                                                              returnIndex();
+                  messageList.forEach(
+                        (element) => element.isSelected = false,
+                  );
+                  selectedMessage = [];
+                  setState(() {});
+                },
+                child: const Icon(Icons.copy, size: 20),
+              ),
 
-                                                          reportUserOrRoom(
-                                                              friendId: widget
-                                                                      .chatListData
-                                                                      ?.chatroom![
-                                                                          index]
-                                                                      .user!
-                                                                      .id
-                                                                      .toString() ??
-                                                                  '',
-                                                              roomId: '');
-                                                        } else {
-                                                          reportUserOrRoom(
-                                                              friendId: widget
-                                                                  .friendId,
-                                                              roomId: '');
-                                                        }
-                                                      },
-                                                    );
-                                            });
-                                      } else if (popupItemsList[i]['title'] ==
-                                          'Block') {
-                                        showDialog(
-                                            context: context,
-                                            // barrierDismissible: false,
-                                            builder: (BuildContext context) {
-                                              return BlockReportDialog(
-                                                  title: widget.name,
-                                                  forBlock: true,
-                                                  onTabYes: () {
-                                                    if (widget.isBlock ==
-                                                        null) {
-                                                      int index = returnIndex();
+              const SizedBox(width: 15),
 
-                                                      userBlock(widget
-                                                              .chatListData
-                                                              ?.chatroom![index]
-                                                              .user!
-                                                              .id
-                                                              .toString() ??
-                                                          '');
-                                                    } else {
-                                                      userBlock(
-                                                          widget.friendId);
-                                                    }
-                                                  });
-                                            });
+              // Forward selected messages
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => const HomeScreen(fromChat: true),
+                      )).then(
+                        (value) {
+                      if (value != null) {
+                        List<ChatListData> selectedChat = value as List<ChatListData>;
+
+                        forwardMessage(
+                          '',
+                          selectedMessage.map((e) => e.id.toString()).toList().join(','),
+                          selectedChat.map((e) => e.id.toString()).toList().join(','),
+                        );
+                      }
+                    },
+                  );
+                },
+                child: const Icon(Icons.shortcut),
+              ),
+            ],
+          )
+              : PopupMenuButton(
+            color: MyColor.primary,
+            itemBuilder: (context) {
+              return [
+                for (int i = 0; i < popupItemsList.length; i++)
+                  PopupMenuItem(
+                      value: popupItemsList[i]['title'],
+                      child: ListTile(
+                        onTap: () {
+                          if (popupItemsList[i]['title'] == 'Report') {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return widget.chatListData != null &&
+                                      widget.chatListData!.type != 1
+                                      ? BlockReportDialog(
+                                    onTabYes: () {
+                                      reportUserOrRoom(
+                                        roomId: widget.chatListData?.id.toString() ?? '',
+                                        friendId: '',
+                                      );
+                                    },
+                                  )
+                                      : BlockReportDialog(
+                                    title: widget.name,
+                                    onTabYes: () {
+                                      if (widget.chatListData != null) {
+                                        int index = returnIndex();
+
+                                        reportUserOrRoom(
+                                          friendId: widget.chatListData?.chatroom![index].user!.id.toString() ?? '',
+                                          roomId: '',
+                                        );
                                       } else {
+                                        reportUserOrRoom(
+                                          friendId: widget.friendId,
+                                          roomId: '',
+                                        );
+                                      }
+                                    },
+                                  );
+                                });
+                          } else if (popupItemsList[i]['title'] == 'Block') {
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BlockReportDialog(
+                                      title: widget.name,
+                                      forBlock: true,
+                                      onTabYes: () {
                                         if (widget.isBlock == null) {
                                           int index = returnIndex();
 
-                                          userBlock(widget.chatListData
-                                                  ?.chatroom![index].user!.id
-                                                  .toString() ??
-                                              '');
+                                          userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
                                         } else {
                                           userBlock(widget.friendId);
                                         }
-                                      }
-                                    },
-                                    leading: Icon(
-                                      popupItemsList[i]['icon'],
-                                      color: MyColor.white,
-                                    ),
-                                    title: Text(
-                                      popupItemsList[i]['title'],
-                                      style: const TextStyle(
-                                          color: MyColor.white,
-                                          fontWeight: FontWeight.w700),
-                                    ),
-                                  ))
-                          ];
+                                      });
+                                });
+                          } else {
+                            if (widget.isBlock == null) {
+                              int index = returnIndex();
+
+                              userBlock(widget.chatListData?.chatroom![index].user!.id.toString() ?? '');
+                            } else {
+                              userBlock(widget.friendId);
+                            }
+                          }
                         },
-                      )
-              ],
+                        leading: Icon(
+                          popupItemsList[i]['icon'],
+                          color: MyColor.white,
+                        ),
+                        title: Text(
+                          popupItemsList[i]['title'],
+                          style: const TextStyle(
+                              color: MyColor.white,
+                              fontWeight: FontWeight.w700),
+                        ),
+                      ))
+              ];
+            },
+          )
+        ],
+
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: isForwardLoading
@@ -823,8 +760,8 @@ class _GroupPageState extends State<GroupPage> {
                               message: message ?? Messages(),
                               isSeen: true,
                               isMe: false,
-                              time: DateFormat('hh:mm').format(
-                                  DateTime.parse(message?.createdAt ?? '')),
+                              time: DateFormat('dd/MM/yyyy hh:mm a').format(
+                                  DateTime.parse(message?.createdAt ?? '').toLocal()),
                               onPress: () {},
                               listLength: 5,
                               currentUser: currentuser ?? '2',
@@ -1494,52 +1431,92 @@ class MessageBubble extends StatelessWidget {
               ),
             if (message.type == 2 &&
                 (isImage == 'jpg' || isImage == 'jpeg' || isImage == 'png'))
+
+              // old code
+              // Align(
+              //   alignment: message.createdBy.toString() == currentUser
+              //       ? Alignment.centerRight
+              //       : Alignment.centerLeft,
+              //   child: InkWell(
+              //     onTap: () {
+              //       Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //           builder: (context) => FullScreenImage(
+              //               imageUrl:
+              //                   '${AppUrl.fileURL}${message.message}' ?? ''),
+              //         ),
+              //       );
+              //     },
+              //     child: Material(
+              //       elevation: 0,
+              //       borderRadius: message.createdBy.toString() == currentUser
+              //           ? const BorderRadius.only(
+              //               topLeft: Radius.circular(10.0),
+              //               bottomLeft: Radius.circular(0),
+              //               bottomRight: Radius.circular(10))
+              //           : const BorderRadius.only(
+              //               topRight: Radius.circular(10.0),
+              //               bottomLeft: Radius.circular(10),
+              //               bottomRight: Radius.circular(0)),
+              //       color: message.createdBy.toString() == currentUser
+              //           ? Colors.transparent//MyColor.primary
+              //           : Colors.transparent,//MyColor.secondary,
+              //       child: Padding(
+              //         padding: const EdgeInsets.all(5.0),
+              //         child: AppImage(
+              //           image: '${AppUrl.fileURL}${message.message}' ?? '',
+              //           height: MediaQuery.of(context).size.height * .2,
+              //           width: MediaQuery.of(context).size.width * .5,
+              //           fit: BoxFit.cover,
+              //         ) /*Image(
+              //             height: MediaQuery.of(context).size.height * .2,
+              //             width: MediaQuery.of(context).size.width * .5,
+              //             fit: BoxFit.cover,
+              //             image: )*/
+              //         ,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+
+              // new code
               Align(
                 alignment: message.createdBy.toString() == currentUser
                     ? Alignment.centerRight
                     : Alignment.centerLeft,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenImage(
-                            imageUrl:
-                                '${AppUrl.fileURL}${message.message}' ?? ''),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0), // 10px padding on left & right
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => FullScreenImage(
+                            imageUrl: '${AppUrl.fileURL}${message.message}' ?? '',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: 200, // Adjust width as per your UI needs
+                      height: 200, // Adjust height as needed
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13.0), // Optional rounded corners
+                        border: Border.all(color: Colors.blueAccent, width: 4), // 4px white border
                       ),
-                    );
-                  },
-                  child: Material(
-                    elevation: 0,
-                    borderRadius: message.createdBy.toString() == currentUser
-                        ? const BorderRadius.only(
-                            topLeft: Radius.circular(10.0),
-                            bottomLeft: Radius.circular(0),
-                            bottomRight: Radius.circular(10))
-                        : const BorderRadius.only(
-                            topRight: Radius.circular(10.0),
-                            bottomLeft: Radius.circular(10),
-                            bottomRight: Radius.circular(0)),
-                    color: message.createdBy.toString() == currentUser
-                        ? Colors.transparent//MyColor.primary
-                        : Colors.transparent,//MyColor.secondary,
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: AppImage(
-                        image: '${AppUrl.fileURL}${message.message}' ?? '',
-                        height: MediaQuery.of(context).size.height * .2,
-                        width: MediaQuery.of(context).size.width * .5,
-                        fit: BoxFit.cover,
-                      ) /*Image(
-                          height: MediaQuery.of(context).size.height * .2,
-                          width: MediaQuery.of(context).size.width * .5,
-                          fit: BoxFit.cover,
-                          image: )*/
-                      ,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8.0), // Same radius as the border
+                        child: Image.network(
+                          '${AppUrl.fileURL}${message.message}' ?? '',
+                          fit: BoxFit.cover, // Adjust fit based on your UI needs
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
+
             if (message.type == 2 && (isImage == 'aac'))
               Align(
                 alignment: message.createdBy.toString() == currentUser

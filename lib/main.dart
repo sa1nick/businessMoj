@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:contacts_service/contacts_service.dart';
+// import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -20,29 +20,30 @@ import 'notification_service.dart';
 Future<void> main() async {
   print("App is starting...");
   WidgetsFlutterBinding.ensureInitialized();
-  await NotificationController.initializeIsolateReceivePort();
-  await NotificationController.startListeningNotificationEvents();
-  await Firebase.initializeApp(
-      options: const FirebaseOptions(
-          apiKey: 'AIzaSyAiUTeYzzq4nD7btvbHV_XRJP10r2q8q68',
-          appId: '1:157135741762:android:d2719d66d58709cce61edb',
-          messagingSenderId: '157135741762',
-          projectId: 'businessmoj-6b0b0'));
-  await NotificationController.initializeLocalNotifications();
+  // await NotificationController.initializeIsolateReceivePort();
+  // await NotificationController.startListeningNotificationEvents();
+  // await Firebase.initializeApp(
+  //     options: const FirebaseOptions(
+  //         apiKey: 'AIzaSyAiUTeYzzq4nD7btvbHV_XRJP10r2q8q68',
+  //         appId: '1:157135741762:android:d2719d66d58709cce61edb',
+  //         messagingSenderId: '157135741762',
+  //         projectId: 'businessmoj-6b0b0'));
+  // await NotificationController.initializeLocalNotifications();
   HttpOverrides.global = MyHttpOverrides();
 
 
   //LocalNotificationService.initialize();
 
-  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+  //FirebaseMessaging.onBackgroundMessage(backgroundHandler);
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  try{
-    String? token = await FirebaseMessaging.instance.getToken();
-    await prefs.setString('fcmtoken', token!);
-    print("-----------token:-----${token}");
-  } on FirebaseException{
-    print('__________FirebaseException_____________');
-  }
+  await prefs.setString('fcmtoken', '');
+  // try{
+  //   String? token = await FirebaseMessaging.instance.getToken();
+  //   await prefs.setString('fcmtoken', token!);
+  //   print("-----------token:-----${token}");
+  // } on FirebaseException{
+  //   print('__________FirebaseException_____________');
+  // }
 
   runApp(const MyApp());
   print("App is starting...");

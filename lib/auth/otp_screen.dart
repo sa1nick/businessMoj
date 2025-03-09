@@ -186,7 +186,7 @@ class _OtpScreenState extends State<OtpScreen> {
         {
           'phone':widget.phoneNo,
           'otp': OtpCOntroller.text,
-          'device_token': myfcmtoken.toString(),
+          'device_token': 'myfcmtoken.toString()',
         });
 
     print(request.fields);
@@ -199,7 +199,7 @@ class _OtpScreenState extends State<OtpScreen> {
       await prefs.setString('token', finalResult['token']);
       prefs.setString(AppConstants.userdata, jsonEncode(finalResult['user']));
 
-      log("shivani -=-= $finalResult['token']");
+      log("shivani -=-= ${finalResult}");
       Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => BottomNavBarMain()),
             (Route<dynamic> route) => false, // This removes all the previous routes.
       );

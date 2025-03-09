@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
@@ -70,16 +71,25 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
 
       http.StreamedResponse response = await request.send();
 
+
+
       if (response.statusCode == 200) {
         // Convert the response to a string and parse it
         final responseBody = await response.stream.bytesToString();
         final parsedJson = jsonDecode(responseBody);
 
-        setState(() {
-          staticPageModel = StaticPageModel.fromJson(parsedJson);
-          loading = false;
 
-        });
+
+
+
+          staticPageModel = StaticPageModel.fromJson(parsedJson);
+
+
+          loading = false;
+         setState(() {
+
+});
+
       } else {
         setState(() {
           loading = false;
@@ -88,9 +98,9 @@ class _PrivacyPolicyState extends State<PrivacyPolicy> {
         Fluttertoast.showToast(msg: "Failed to load profile");
       }
     } catch (e) {
-      setState(() {
-        loading = false;
-      });
+      // setState(() {
+      //   loading = false;
+      // });
       // Handle network or parsing error
       Fluttertoast.showToast(msg: "An error occurred: $e");
     }

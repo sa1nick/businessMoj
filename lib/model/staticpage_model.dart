@@ -16,7 +16,7 @@ class StaticPageModel {
   bool? cashOnDelivery;
   String? sellerRegistration;
   String? posActive;
-  int? companyPhone;
+  String? companyPhone;
   String? companyEmail;
   String? companyLogo;
   dynamic deliveryCountryRestriction;
@@ -115,7 +115,7 @@ class StaticPageModel {
     cashOnDelivery: json["cash_on_delivery"],
     sellerRegistration: json["seller_registration"],
     posActive: json["pos_active"],
-    companyPhone: json["company_phone"],
+    companyPhone: json["company_phone"].toString(),
     companyEmail: json["company_email"],
     companyLogo: json["company_logo"],
     deliveryCountryRestriction: json["delivery_country_restriction"],

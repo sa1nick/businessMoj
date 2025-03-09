@@ -422,7 +422,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    String?  token = await FirebaseMessaging.instance.getToken();
+   // String?  token = await FirebaseMessaging.instance.getToken();
     setState(() {
       isLoading = true;
     });
@@ -434,7 +434,7 @@ class _SignUpPageState extends State<SignUpPage> {
       'email': emailController.text,
       'phone': mobileController.text,
       'password': passController.text,
-      'device_token': token ?? '',
+      'device_token': 'token' ?? '',
     });
 
 

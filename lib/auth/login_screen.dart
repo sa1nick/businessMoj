@@ -370,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
         {
           'email': emailController.text,
           'password': passController.text,
-          'device_token': myfcmtoken.toString(),
+          'device_token': 'myfcmtoken.toString()',
         });
 
     print(request.fields);

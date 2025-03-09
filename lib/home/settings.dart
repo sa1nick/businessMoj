@@ -42,7 +42,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
 String? firstname,lastname,phoneNo;
-  getuser()async{
+  getuser() async{
     SharedPreferences prefs = await SharedPreferences.getInstance();
      firstname = prefs.getString('fname')??"";
      lastname = prefs.getString('lname')??"";
@@ -306,7 +306,7 @@ String? firstname,lastname,phoneNo;
     UserData  userData = UserData.fromJson(jsonDecode(userString!));
 
 
-    String? token = pref?.getString('token');
+    String? token = pref.getString('token');
 
     try {
       var headers = {'Authorization': 'Bearer $token'};
