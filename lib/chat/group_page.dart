@@ -35,6 +35,8 @@ import '../model/chatlist_model.dart';
 import 'group_detail.dart';
 import 'package:http/http.dart' as http;
 
+import 'in_chat_profile_info.dart';
+
 class GroupPage extends StatefulWidget {
   final String name, image, friendId;
   String? myRoomId;
@@ -476,47 +478,77 @@ class _GroupPageState extends State<GroupPage> {
                   ));
             }
           },
-          child: Row(
-            children: [
-              CircleAvatar(
-                radius: 18,
-                child: ClipOval(
-                  child: AppImage(image: widget.image),
-                ), // NetworkImage(widget.image),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width / 2.2,
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
+          child: GestureDetector(
+            onTap: () {
+              print("IMAGE URL: https://businessmoj.com/storage/app/public/profile/${widget.chatListData?.chatroom?.first.user?.image ?? 'default.png'}");
+              print(jsonEncode(widget.chatListData?.toJson()));
+
+              Navigator.push(
+                context,
+                PageRouteBuilder(
+                  transitionDuration: const Duration(milliseconds: 500), // Animation speed
+                  pageBuilder: (context, animation, secondaryAnimation) {
+                    print("Image URL: ${widget.image}"); // Console log for debugging
+                    return InChatProfileInfo(
+                      image: (widget.chatListData?.chatroom?.first.user?.image != null)
+                          ? "https://businessmoj.com/storage/app/public/profile/${widget.chatListData!.chatroom!.first.user!.image}"
+                          : widget.image,
+                      chatListData: widget.chatListData,
+                    );
+                  },
+
+                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                    return FadeTransition(
+                      opacity: animation,
+                      child: child,
+                    );
+                  },
+                ),
+              );
+            },
+
+
+            child: Row(
+              children: [
+                CircleAvatar(
+                  radius: 18,
+                  child: ClipOval(
+                    child: AppImage(image: widget.image),
+                  ), // NetworkImage(widget.image),
+                ),
+                const SizedBox(width: 10),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.2,
+                      child: Text(
+                        widget.name.isNotEmpty ? "${widget.chatListData!.chatroom!.first.user!.fName} ${widget.chatListData!.chatroom!.first.user!.lName}" : 'NA',
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  widget.chatListData != null && widget.chatListData!.type != 1
-                      ? const Text(
-                          'tab here to see group detail',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 13),
-                        )
-                      : const SizedBox()
-                ],
-              )
-            ],
+                    const SizedBox(width: 10),
+                    widget.chatListData != null && widget.chatListData!.type != 1
+                        ? const Text(
+                      'Tap here to see group detail',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    )
+                        : const SizedBox()
+                  ],
+                ),
+              ],
+            ),
           ),
+
         ),
         actions: widget.friendId == '1'
             ? []
