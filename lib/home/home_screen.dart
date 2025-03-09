@@ -155,7 +155,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: Text(
                           popupItemsList[i]['title'],
                           style: const TextStyle(
-                              color: MyColor.red,
                               fontWeight: FontWeight.w700),
                         ),
                       ))
@@ -291,7 +290,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             itemCount: myChatList.length,
                             padding: EdgeInsets.zero,
                             itemBuilder: (context, index) {
+
                               var users = myChatList[index];
+                              // Print imageUrl for debugging
+                              print('User Image URL: ${users.toJson()}');
                               return users.id == vId
                                   ? const SizedBox()
                                   : Padding(
@@ -427,8 +429,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             ? Image.asset(
                                                                 'assets/images/Loud_Speaker.png')
                                                             : AppImage(
-                                                                image: users
-                                                                        .imageUrl ??
+                                                                image: 'https://businessmoj.com/storage/app/public/profile/${users.chatroom!.first.user!.image}' ??
                                                                     ''),
                                                       ),
                                                     ),
@@ -552,7 +553,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                               const SizedBox(
-                                                width: 200,
                                               )
                                             ],
                                           ),
